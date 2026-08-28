@@ -1,0 +1,9462 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+  <base target="_top">
+  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+
+  <meta name="viewport"
+        content="width=device-width,
+                 initial-scale=1,
+                 maximum-scale=1,
+                 user-scalable=no">
+
+  <title>Mobile POS</title>
+
+
+  <style>
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+
+    html,
+    body {
+      width: 100%;
+      min-height: 100%;
+    }
+
+
+    body {
+
+      font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+      background: #f4f6f8;
+
+      color: #111827;
+
+      -webkit-tap-highlight-color:
+        transparent;
+
+    }
+
+
+    button,
+    input {
+      font-family: inherit;
+    }
+
+
+    button {
+      cursor: pointer;
+    }
+
+
+    /* =================================================
+       APP
+    ================================================= */
+
+    .app {
+
+      width: 100%;
+
+      max-width: 600px;
+
+      min-height: 100vh;
+
+      margin: auto;
+
+      background: #ffffff;
+
+      position: relative;
+
+      overflow-x: hidden;
+
+    }
+
+
+    /* =================================================
+       HEADER
+    ================================================= */
+
+    .top-header {
+
+      background: #111827;
+
+      color: #ffffff;
+
+      padding:
+        20px
+        20px
+        18px;
+
+      position: sticky;
+
+      top: 0;
+
+      z-index: 50;
+
+    }
+
+
+    .brand {
+
+      display: flex;
+
+      align-items: center;
+
+      gap: 12px;
+
+    }
+
+
+    .brand-icon {
+
+      width: 44px;
+
+      height: 44px;
+
+      border-radius: 13px;
+
+      background: #ffffff;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      font-size: 24px;
+
+    }
+
+
+    .brand-name {
+
+      font-size: 21px;
+
+      font-weight: 700;
+
+    }
+
+
+    .brand-subtitle {
+
+      margin-top: 3px;
+
+      font-size: 12px;
+
+      opacity: .7;
+
+    }
+
+
+    /* =================================================
+       PAGE
+    ================================================= */
+
+    .page {
+
+      display: none;
+
+      padding:
+        20px
+        20px
+        100px;
+
+      min-height: calc(100vh - 82px);
+
+    }
+
+
+    .page.active {
+      display: block;
+    }
+
+
+    /* =================================================
+       PAGE TITLE
+    ================================================= */
+
+    .page-heading {
+
+      margin-bottom: 18px;
+
+    }
+
+
+    .page-title {
+
+      font-size: 25px;
+
+      font-weight: 700;
+
+    }
+
+
+    .page-description {
+
+      margin-top: 5px;
+
+      color: #6b7280;
+
+      font-size: 13px;
+
+      line-height: 1.5;
+
+    }
+
+
+    /* =================================================
+       SALES CARD
+    ================================================= */
+
+    .sales-card {
+
+      background: #111827;
+
+      color: white;
+
+      border-radius: 20px;
+
+      padding: 22px;
+
+      margin-bottom: 18px;
+
+      position: relative;
+
+      overflow: hidden;
+
+    }
+
+
+    .sales-card::after {
+
+      content: "";
+
+      position: absolute;
+
+      width: 130px;
+
+      height: 130px;
+
+      border-radius: 50%;
+
+      background: rgba(255,255,255,.05);
+
+      right: -45px;
+
+      top: -45px;
+
+    }
+
+
+    .sales-label {
+
+      font-size: 12px;
+
+      opacity: .7;
+
+      letter-spacing: .5px;
+
+    }
+
+
+    .sales-value {
+
+      font-size: 34px;
+
+      font-weight: 700;
+
+      margin-top: 7px;
+
+    }
+
+
+    .sales-today {
+
+      margin-top: 6px;
+
+      font-size: 12px;
+
+      opacity: .7;
+
+    }
+
+
+    /* =================================================
+       STAT GRID
+    ================================================= */
+
+    .stats-grid {
+
+      display: grid;
+
+      grid-template-columns:
+        1fr 1fr;
+
+      gap: 12px;
+
+      margin-bottom: 22px;
+
+    }
+
+
+    .stat-card {
+
+      border: 1px solid #e5e7eb;
+
+      background: #ffffff;
+
+      border-radius: 17px;
+
+      padding: 17px;
+
+    }
+
+
+    .stat-icon {
+
+      font-size: 24px;
+
+      margin-bottom: 10px;
+
+    }
+
+
+    .stat-label {
+
+      font-size: 12px;
+
+      color: #6b7280;
+
+    }
+
+
+    .stat-value {
+
+      font-size: 24px;
+
+      font-weight: 700;
+
+      margin-top: 5px;
+
+    }
+
+
+    /* =================================================
+       SECTION
+    ================================================= */
+
+    .section {
+
+      margin-top: 22px;
+
+    }
+
+
+    .section-header {
+
+      display: flex;
+
+      justify-content: space-between;
+
+      align-items: center;
+
+      margin-bottom: 12px;
+
+    }
+
+
+    .section-title {
+
+      font-size: 17px;
+
+      font-weight: 700;
+
+    }
+
+
+    /* =================================================
+       ACTION GRID
+    ================================================= */
+
+    .action-grid {
+
+      display: grid;
+
+      grid-template-columns:
+        1fr 1fr;
+
+      gap: 12px;
+
+    }
+
+
+    .action {
+
+      border: none;
+
+      border-radius: 18px;
+
+      padding: 20px 12px;
+
+      background: #f3f4f6;
+
+      text-align: left;
+
+      min-height: 105px;
+
+      transition:
+        transform .1s ease;
+
+    }
+
+
+    .action:active {
+
+      transform: scale(.97);
+
+    }
+
+
+    .action-icon {
+
+      font-size: 29px;
+
+      margin-bottom: 10px;
+
+    }
+
+
+    .action-title {
+
+      display: block;
+
+      font-size: 15px;
+
+      font-weight: 700;
+
+    }
+
+
+    .action-description {
+
+      display: block;
+
+      margin-top: 4px;
+
+      color: #6b7280;
+
+      font-size: 11px;
+
+    }
+
+
+    /* =================================================
+       INVENTORY STATUS
+    ================================================= */
+
+    .inventory-status {
+
+      display: grid;
+
+      grid-template-columns:
+        1fr 1fr 1fr;
+
+      gap: 9px;
+
+    }
+
+
+    .status-card {
+
+      border-radius: 15px;
+
+      padding: 14px 10px;
+
+      text-align: center;
+
+      background: #f3f4f6;
+
+    }
+
+
+    .status-number {
+
+      font-size: 21px;
+
+      font-weight: 700;
+
+    }
+
+
+    .status-label {
+
+      margin-top: 4px;
+
+      font-size: 10px;
+
+      color: #6b7280;
+
+    }
+
+
+    /* =================================================
+       PLACEHOLDER PAGES
+    ================================================= */
+
+    .empty-page {
+
+      min-height: 50vh;
+
+      display: flex;
+
+      flex-direction: column;
+
+      align-items: center;
+
+      justify-content: center;
+
+      text-align: center;
+
+      color: #6b7280;
+
+    }
+
+
+    .empty-icon {
+
+      font-size: 55px;
+
+      margin-bottom: 15px;
+
+    }
+
+
+    .empty-title {
+
+      color: #111827;
+
+      font-size: 21px;
+
+      font-weight: 700;
+
+    }
+
+
+    .empty-text {
+
+      max-width: 300px;
+
+      margin-top: 7px;
+
+      font-size: 13px;
+
+      line-height: 1.5;
+
+    }
+
+
+    /* =================================================
+       BOTTOM NAV
+    ================================================= */
+
+    .bottom-nav {
+
+      position: fixed;
+
+      bottom: 0;
+
+      left: 50%;
+
+      transform: translateX(-50%);
+
+      width: 100%;
+
+      max-width: 600px;
+
+      height: 76px;
+
+      background: rgba(
+        255,
+        255,
+        255,
+        .97
+      );
+
+      border-top:
+        1px solid #e5e7eb;
+
+      display: grid;
+
+      grid-template-columns:
+        repeat(4, 1fr);
+
+      z-index: 100;
+
+      padding-bottom:
+        env(safe-area-inset-bottom);
+
+    }
+
+
+    .nav-item {
+
+      border: none;
+
+      background: transparent;
+
+      color: #6b7280;
+
+      display: flex;
+
+      flex-direction: column;
+
+      align-items: center;
+
+      justify-content: center;
+
+      gap: 4px;
+
+      position: relative;
+
+    }
+
+
+    .nav-item.active {
+
+      color: #111827;
+
+      font-weight: 700;
+
+    }
+
+
+    .nav-item.active::before {
+
+      content: "";
+
+      position: absolute;
+
+      top: 0;
+
+      left: 25%;
+
+      right: 25%;
+
+      height: 3px;
+
+      background: #111827;
+
+      border-radius:
+        0 0 5px 5px;
+
+    }
+
+
+    .nav-icon {
+
+      font-size: 21px;
+
+    }
+
+
+    .nav-label {
+
+      font-size: 10px;
+
+    }
+
+
+    /* =================================================
+       LOADING
+    ================================================= */
+
+    .loading {
+
+      position: fixed;
+
+      inset: 0;
+
+      background:
+        rgba(255,255,255,.85);
+
+      z-index: 999;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+    }
+
+
+    .loading-box {
+
+      background: white;
+
+      border-radius: 17px;
+
+      padding: 20px 25px;
+
+      box-shadow:
+        0 10px 35px
+        rgba(0,0,0,.12);
+
+      text-align: center;
+
+    }
+
+
+    .spinner {
+
+      width: 30px;
+
+      height: 30px;
+
+      border:
+        3px solid #e5e7eb;
+
+      border-top-color:
+        #111827;
+
+      border-radius: 50%;
+
+      animation:
+        spin .7s linear infinite;
+
+      margin: auto auto 10px;
+
+    }
+
+
+    @keyframes spin {
+
+      to {
+        transform: rotate(360deg);
+      }
+
+    }
+
+
+    /* =================================================
+       RESPONSIVE
+    ================================================= */
+
+    @media (max-width: 380px) {
+
+      .page {
+
+        padding:
+          17px
+          15px
+          95px;
+
+      }
+
+      .sales-value {
+
+        font-size: 29px;
+
+      }
+
+      .action {
+
+        min-height: 98px;
+
+      }
+
+    }
+
+/* =================================================
+   POS SCANNER
+================================================= */
+
+.scanner-card {
+
+  background: #111827;
+
+  color: white;
+
+  border-radius: 20px;
+
+  padding: 16px;
+
+  margin-bottom: 20px;
+
+}
+
+
+.scanner-header {
+
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  margin-bottom: 14px;
+
+}
+
+
+.scanner-title {
+
+  font-size: 17px;
+
+  font-weight: 700;
+
+}
+
+
+.scanner-subtitle {
+
+  margin-top: 4px;
+
+  font-size: 11px;
+
+  opacity: .65;
+
+}
+
+
+.scanner-icon {
+
+  width: 42px;
+
+  height: 42px;
+
+  border-radius: 13px;
+
+  background: rgba(255,255,255,.08);
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  font-size: 22px;
+
+}
+
+
+/* SCANNER BOX */
+
+.scanner-box {
+
+  height: 230px;
+
+  border-radius: 15px;
+
+  background: #050505;
+
+  position: relative;
+
+  overflow: hidden;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+}
+
+
+.scanner-message {
+
+  text-align: center;
+
+  color: rgba(255,255,255,.75);
+
+  font-size: 14px;
+
+}
+
+
+.scanner-message small {
+
+  display: block;
+
+  margin-top: 7px;
+
+  font-size: 10px;
+
+  color: rgba(255,255,255,.45);
+
+}
+
+
+.scanner-camera-icon {
+
+  font-size: 35px;
+
+  margin-bottom: 8px;
+
+  opacity: .8;
+
+}
+
+
+/* SCANNER CORNERS */
+
+.scanner-corners {
+
+  position: absolute;
+
+  inset: 35px;
+
+}
+
+
+.corner {
+
+  position: absolute;
+
+  width: 35px;
+
+  height: 35px;
+
+  border-color: rgba(255,255,255,.8);
+
+  border-style: solid;
+
+}
+
+
+.top-left {
+
+  top: 0;
+
+  left: 0;
+
+  border-width: 3px 0 0 3px;
+
+}
+
+
+.top-right {
+
+  top: 0;
+
+  right: 0;
+
+  border-width: 3px 3px 0 0;
+
+}
+
+
+.bottom-left {
+
+  bottom: 0;
+
+  left: 0;
+
+  border-width: 0 0 3px 3px;
+
+}
+
+
+.bottom-right {
+
+  bottom: 0;
+
+  right: 0;
+
+  border-width: 0 3px 3px 0;
+
+}
+
+
+/* SCANNER LINE */
+
+.scanner-line {
+
+  position: absolute;
+
+  left: 35px;
+
+  right: 35px;
+
+  top: 50%;
+
+  height: 2px;
+
+  background: rgba(255,255,255,.65);
+
+  opacity: .65;
+
+}
+
+
+/* MANUAL BARCODE */
+
+.manual-scan {
+
+  display: flex;
+
+  gap: 8px;
+
+  margin-top: 12px;
+
+}
+
+
+.manual-scan input {
+
+  flex: 1;
+
+  min-width: 0;
+
+  height: 45px;
+
+  border: none;
+
+  border-radius: 11px;
+
+  padding: 0 13px;
+
+  background: rgba(255,255,255,.1);
+
+  color: white;
+
+  outline: none;
+
+}
+
+
+.manual-scan input::placeholder {
+
+  color: rgba(255,255,255,.45);
+
+}
+
+
+.manual-scan button {
+
+  width: 70px;
+
+  border: none;
+
+  border-radius: 11px;
+
+  background: white;
+
+  color: #111827;
+
+  font-weight: 700;
+
+}
+
+
+
+/* =================================================
+   CART
+================================================= */
+
+.cart-section {
+
+  margin-bottom: 15px;
+
+}
+
+
+.cart-header {
+
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  margin-bottom: 12px;
+
+}
+
+
+.cart-title {
+
+  font-size: 18px;
+
+  font-weight: 700;
+
+}
+
+
+.clear-cart-button {
+
+  border: none;
+
+  background: transparent;
+
+  color: #6b7280;
+
+  font-size: 12px;
+
+  padding: 6px;
+
+}
+
+
+.cart-items {
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 10px;
+
+}
+
+
+.cart-item {
+
+  border: 1px solid #e5e7eb;
+
+  border-radius: 16px;
+
+  padding: 15px;
+
+  background: white;
+
+}
+
+
+.cart-item-top {
+
+  display: flex;
+
+  justify-content: space-between;
+
+  gap: 10px;
+
+}
+
+
+.cart-product-name {
+
+  font-size: 15px;
+
+  font-weight: 700;
+
+}
+
+
+.cart-barcode {
+
+  margin-top: 3px;
+
+  color: #9ca3af;
+
+  font-size: 10px;
+
+}
+
+
+.cart-item-price {
+
+  font-size: 15px;
+
+  font-weight: 700;
+
+  white-space: nowrap;
+
+}
+
+
+.cart-controls {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  margin-top: 13px;
+
+}
+
+
+.quantity-controls {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+}
+
+
+.quantity-button {
+
+  width: 34px;
+
+  height: 34px;
+
+  border: 1px solid #e5e7eb;
+
+  border-radius: 9px;
+
+  background: #f9fafb;
+
+  font-size: 18px;
+
+}
+
+
+.quantity-value {
+
+  width: 35px;
+
+  text-align: center;
+
+  font-weight: 700;
+
+}
+
+
+.item-subtotal {
+
+  font-size: 13px;
+
+  color: #6b7280;
+
+}
+
+
+.remove-item {
+
+  border: none;
+
+  background: transparent;
+
+  color: #9ca3af;
+
+  font-size: 11px;
+
+  margin-left: 10px;
+
+}
+
+
+.remove-item:active {
+
+  color: #111827;
+
+}
+
+
+
+/* =================================================
+   EMPTY CART
+================================================= */
+
+.empty-cart {
+
+  text-align: center;
+
+  padding: 35px 20px;
+
+  border:
+    1px dashed #d1d5db;
+
+  border-radius: 16px;
+
+  color: #9ca3af;
+
+}
+
+
+.empty-cart-icon {
+
+  font-size: 40px;
+
+  margin-bottom: 8px;
+
+}
+
+
+.empty-cart-title {
+
+  color: #374151;
+
+  font-weight: 700;
+
+  font-size: 15px;
+
+}
+
+
+.empty-cart-text {
+
+  margin-top: 5px;
+
+  font-size: 11px;
+
+}
+
+
+
+/* =================================================
+   TOTAL CARD
+================================================= */
+
+.total-card {
+
+  background: #f3f4f6;
+
+  border-radius: 19px;
+
+  padding: 18px;
+
+  margin-bottom: 20px;
+
+}
+
+
+.total-row {
+
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  color: #6b7280;
+
+  font-size: 13px;
+
+  margin-bottom: 9px;
+
+}
+
+
+.total-row strong {
+
+  color: #111827;
+
+}
+
+
+.total-divider {
+
+  height: 1px;
+
+  background: #d1d5db;
+
+  margin: 13px 0;
+
+}
+
+
+.grand-total-row {
+
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  margin-bottom: 16px;
+
+}
+
+
+.grand-total-row span {
+
+  font-size: 15px;
+
+  font-weight: 700;
+
+}
+
+
+.grand-total-row strong {
+
+  font-size: 27px;
+
+}
+
+
+.checkout-button {
+
+  width: 100%;
+
+  height: 53px;
+
+  border: none;
+
+  border-radius: 14px;
+
+  background: #111827;
+
+  color: white;
+
+  font-size: 15px;
+
+  font-weight: 700;
+
+}
+
+
+.checkout-button:disabled {
+
+  background: #d1d5db;
+
+  color: #9ca3af;
+
+  cursor: not-allowed;
+
+}
+
+/* =================================================
+   REAL BARCODE SCANNER
+================================================= */
+
+.barcode-reader {
+
+  width: 100%;
+
+  height: 100%;
+
+  overflow: hidden;
+
+  background: #050505;
+
+}
+
+
+/*
+ * html5-qrcode generates the video element
+ * automatically.
+ */
+
+.barcode-reader video {
+
+  width: 100% !important;
+
+  height: 100% !important;
+
+  object-fit: cover !important;
+
+}
+
+
+/*
+ * Hide the library's default controls.
+ */
+
+.barcode-reader img {
+
+  display: none !important;
+
+}
+
+
+.barcode-reader__dashboard {
+
+  padding: 0 !important;
+
+}
+
+
+.barcode-reader__dashboard_section {
+
+  padding: 0 !important;
+
+}
+
+
+.barcode-reader__camera_selection {
+
+  display: none !important;
+
+}
+
+
+/*
+ * Scanner border.
+ */
+
+.scanner-box {
+
+  border:
+    2px solid
+    rgba(255,255,255,.25);
+
+}
+
+
+/*
+ * Scanner status.
+ */
+
+.scanner-status {
+
+  margin-top: 10px;
+
+  text-align: center;
+
+  font-size: 11px;
+
+  color: rgba(255,255,255,.65);
+
+}
+
+
+/*
+ * Start scanner button.
+ */
+
+.start-scanner-button {
+
+  width: 100%;
+
+  height: 45px;
+
+  margin-top: 10px;
+
+  border: none;
+
+  border-radius: 11px;
+
+  background: white;
+
+  color: #111827;
+
+  font-weight: 700;
+
+}
+
+
+/*
+ * Stop scanner button.
+ */
+
+.stop-scanner-button {
+
+  width: 100%;
+
+  height: 42px;
+
+  margin-top: 8px;
+
+  border: none;
+
+  border-radius: 11px;
+
+  background: rgba(255,255,255,.1);
+
+  color: white;
+
+  font-size: 12px;
+
+}
+
+  
+
+/* =================================================
+   TRANSACTION RECEIPT MODAL
+================================================= */
+
+.receipt-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 100001;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.receipt-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,.62);
+  backdrop-filter: blur(5px);
+}
+
+.receipt-box {
+  position: relative;
+  width: 100%;
+  max-width: 430px;
+  background: #fff;
+  border-radius: 26px;
+  padding: 28px 24px 22px;
+  box-shadow: 0 24px 70px rgba(0,0,0,.28);
+  animation: receiptModalIn .22s ease-out;
+}
+
+@keyframes receiptModalIn {
+  from { opacity: 0; transform: translateY(18px) scale(.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.receipt-success-icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 14px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #dcfce7;
+  color: #15803d;
+  font-size: 34px;
+  font-weight: 900;
+}
+
+.receipt-title {
+  text-align: center;
+  font-size: 24px;
+  font-weight: 900;
+  color: #111827;
+}
+
+.receipt-subtitle {
+  text-align: center;
+  margin-top: 5px;
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.receipt-id-box {
+  margin: 20px 0 14px;
+  padding: 14px;
+  border-radius: 15px;
+  background: #f3f4f6;
+  text-align: center;
+}
+
+.receipt-id-label {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .8px;
+  color: #6b7280;
+}
+
+.receipt-id {
+  margin-top: 5px;
+  font-size: 13px;
+  font-weight: 800;
+  color: #111827;
+  word-break: break-all;
+}
+
+.receipt-summary {
+  border-top: 1px dashed #d1d5db;
+  border-bottom: 1px dashed #d1d5db;
+  padding: 13px 0;
+}
+
+.receipt-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 7px 0;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.receipt-row strong {
+  color: #111827;
+}
+
+.receipt-total-row {
+  margin-top: 5px;
+  padding-top: 13px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.receipt-total-row span {
+  font-size: 15px;
+  font-weight: 900;
+  color: #111827;
+}
+
+.receipt-total-row strong {
+  font-size: 25px;
+}
+
+.receipt-change-row strong {
+  color: #15803d;
+}
+
+.receipt-done-button {
+  width: 100%;
+  min-height: 54px;
+  margin-top: 18px;
+  border: none;
+  border-radius: 15px;
+  background: #111827;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+@media (max-width:480px) {
+  .receipt-modal {
+    align-items: flex-end;
+    padding: 0;
+  }
+  .receipt-box {
+    max-width: none;
+    border-radius: 26px 26px 0 0;
+    padding: 25px 18px calc(18px + env(safe-area-inset-bottom));
+  }
+}
+
+
+/* =================================================
+   POS ALERT MODAL
+================================================= */
+
+.pos-alert-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 100002;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.pos-alert-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,.62);
+  backdrop-filter: blur(5px);
+}
+
+.pos-alert-box {
+  position: relative;
+  width: 100%;
+  max-width: 390px;
+  background: #fff;
+  border-radius: 24px;
+  padding: 28px 24px 22px;
+  box-shadow: 0 24px 70px rgba(0,0,0,.28);
+  animation: posAlertIn .20s ease-out;
+  text-align: center;
+}
+
+@keyframes posAlertIn {
+  from { opacity: 0; transform: translateY(18px) scale(.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.pos-alert-icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 14px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fef3c7;
+  color: #d97706;
+  font-size: 32px;
+  font-weight: 900;
+}
+
+.pos-alert-title {
+  font-size: 23px;
+  font-weight: 900;
+  color: #111827;
+}
+
+.pos-alert-product {
+  margin-top: 8px;
+  font-size: 18px;
+  font-weight: 800;
+  color: #374151;
+  word-break: break-word;
+}
+
+.pos-alert-message {
+  margin-top: 7px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #6b7280;
+}
+
+.pos-alert-stock {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 14px;
+  padding: 8px 13px;
+  border-radius: 999px;
+  background: #f3f4f6;
+  color: #374151;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.pos-alert-button {
+  width: 100%;
+  min-height: 52px;
+  margin-top: 20px;
+  border: none;
+  border-radius: 15px;
+  background: #111827;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+@media (max-width:480px) {
+  .pos-alert-modal {
+    align-items: flex-end;
+    padding: 0;
+  }
+  .pos-alert-box {
+    max-width: none;
+    border-radius: 26px 26px 0 0;
+    padding: 25px 18px calc(18px + env(safe-area-inset-bottom));
+  }
+}
+
+/* =================================================
+   PAYMENT MODAL
+================================================= */
+
+.payment-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.payment-modal-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,.60);
+  backdrop-filter: blur(4px);
+}
+
+.payment-modal-box {
+  position: relative;
+  width: 100%;
+  max-width: 430px;
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 24px;
+  box-shadow: 0 20px 60px rgba(0,0,0,.25);
+  animation: paymentModalIn .20s ease-out;
+}
+
+@keyframes paymentModalIn {
+  from { opacity: 0; transform: translateY(20px) scale(.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.payment-modal-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; }
+.payment-modal-title { font-size:24px; font-weight:800; color:#111827; }
+.payment-modal-subtitle { margin-top:4px; font-size:13px; color:#6b7280; }
+.payment-close-button { width:40px; height:40px; border:none; border-radius:50%; background:#f3f4f6; color:#374151; font-size:28px; line-height:1; cursor:pointer; }
+.payment-total-box { padding:20px; border-radius:18px; background:#f3f4f6; text-align:center; margin-bottom:22px; }
+.payment-label { font-size:12px; font-weight:700; letter-spacing:1px; color:#6b7280; }
+.payment-total { margin-top:5px; font-size:36px; font-weight:900; color:#111827; }
+.payment-input-section { margin-bottom:18px; }
+.payment-input-label { display:block; margin-bottom:8px; font-size:13px; font-weight:800; color:#374151; }
+.payment-input-wrapper { display:flex; align-items:center; border:2px solid #d1d5db; border-radius:16px; background:#fff; overflow:hidden; }
+.payment-input-wrapper:focus-within { border-color:#111827; box-shadow:0 0 0 3px rgba(17,24,39,.10); }
+.payment-currency { padding-left:18px; font-size:24px; font-weight:800; color:#374151; }
+#cashReceived { width:100%; border:none; outline:none; padding:16px; font-size:28px; font-weight:800; background:transparent; color:#111827; box-sizing:border-box; }
+#cashReceived::placeholder { color:#d1d5db; }
+.payment-change-box { display:flex; align-items:center; justify-content:space-between; padding:16px 18px; border-radius:16px; background:#f9fafb; margin-bottom:12px; }
+.payment-change-label { font-size:14px; font-weight:800; color:#6b7280; }
+.payment-change { font-size:24px; font-weight:900; color:#111827; }
+.payment-message { padding:12px 14px; border-radius:12px; margin-bottom:14px; font-size:13px; font-weight:700; text-align:center; }
+.payment-buttons { display:flex; gap:10px; margin-top:10px; }
+.payment-cancel-button, .payment-complete-button { flex:1; min-height:54px; border:none; border-radius:15px; font-size:14px; font-weight:800; cursor:pointer; }
+.payment-cancel-button { background:#f3f4f6; color:#374151; }
+.payment-complete-button { background:#111827; color:#fff; }
+.payment-complete-button:disabled { background:#d1d5db; color:#9ca3af; cursor:not-allowed; }
+
+@media (max-width:480px) {
+  .payment-modal { align-items:flex-end; padding:0; }
+  .payment-modal-box { max-width:none; border-radius:24px 24px 0 0; padding:22px 18px calc(22px + env(safe-area-inset-bottom)); }
+  .payment-total { font-size:34px; }
+  #cashReceived { font-size:26px; }
+}
+
+/* =================================================
+   ADD PRODUCT FORM
+================================================= */
+
+.form-group {
+  margin-bottom: 18px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 7px;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.form-group input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1px solid #d9dce1;
+  background: #fff;
+  font-size: 16px;
+  outline: none;
+}
+
+.form-group input:focus {
+  border-color: #111827;
+}
+
+#registerProductButton {
+  width: 100%;
+  margin-top: 8px;
+}
+
+#registerProductButton:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+#addProductStatus {
+  text-align: center;
+  margin-top: 15px;
+  font-size: 14px;
+}
+
+    /* =================================================
+   PRODUCT SUCCESS MESSAGE
+================================================= */
+
+.product-success-overlay {
+
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 99999;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  padding: 20px;
+
+  background: rgba(0, 0, 0, 0.65);
+
+}
+
+
+.product-success-card {
+
+  width: 100%;
+
+  max-width: 420px;
+
+  background: #ffffff;
+
+  border-radius: 24px;
+
+  padding: 30px 24px;
+
+  text-align: center;
+
+  box-shadow:
+    0 20px 60px rgba(0,0,0,0.30);
+
+}
+
+
+.product-success-icon {
+
+  width: 70px;
+
+  height: 70px;
+
+  margin: 0 auto 18px;
+
+  border-radius: 50%;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  background: #22c55e;
+
+  color: white;
+
+  font-size: 40px;
+
+  font-weight: 700;
+
+}
+
+
+.product-success-title {
+
+  font-size: 22px;
+
+  font-weight: 800;
+
+  margin-bottom: 22px;
+
+}
+
+
+.product-success-details {
+
+  text-align: left;
+
+  border-radius: 16px;
+
+  padding: 16px;
+
+  background: #f5f6f8;
+
+}
+
+
+.product-success-details div {
+
+  display: flex;
+
+  justify-content: space-between;
+
+  gap: 15px;
+
+  padding: 10px 0;
+
+  border-bottom: 1px solid #ddd;
+
+}
+
+
+.product-success-details div:last-child {
+
+  border-bottom: none;
+
+}
+
+
+.product-success-details span {
+
+  color: #777;
+
+}
+
+
+.product-success-details strong {
+
+  text-align: right;
+
+}
+
+
+.product-success-button {
+
+  width: 100%;
+
+  margin-top: 22px;
+
+  padding: 15px;
+
+  border: none;
+
+  border-radius: 14px;
+
+  background: #111827;
+
+  color: white;
+
+  font-size: 17px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+
+}
+
+/* =================================================
+   INVENTORY
+================================================= */
+
+.inventory-toolbar {
+
+  display: flex;
+
+  gap: 12px;
+
+  align-items: center;
+
+  margin-bottom: 18px;
+
+}
+
+
+.inventory-search {
+
+  flex: 1;
+
+}
+
+
+.inventory-search input {
+
+  width: 100%;
+
+  box-sizing: border-box;
+
+  padding: 14px 16px;
+
+  border-radius: 12px;
+
+  border: 1px solid #d9dce1;
+
+  background: #fff;
+
+  color: #111827;
+
+  font-size: 16px;
+
+  outline: none;
+
+}
+
+
+.inventory-search input::placeholder {
+
+  color: #777;
+
+}
+
+
+.inventory-search input:focus {
+
+  border-color: #111827;
+
+}
+
+
+/* =================================================
+   REFRESH BUTTON
+================================================= */
+
+#inventoryRefreshButton {
+
+  width: auto;
+
+  min-width: 120px;
+
+  margin-top: 0;
+
+}
+
+
+/* =================================================
+   STATUS
+================================================= */
+
+.inventory-status {
+
+  text-align: center;
+
+  padding: 12px;
+
+  margin-bottom: 12px;
+
+  font-size: 14px;
+
+  color: #d1d5db;
+
+}
+
+
+/* =================================================
+   INVENTORY TABLE
+================================================= */
+
+.inventory-table-wrapper {
+
+  width: 100%;
+
+  overflow-x: auto;
+
+  border-radius: 16px;
+
+  background: #ffffff;
+
+}
+
+
+/* IMPORTANT:
+   Explicitly set the table text color.
+*/
+
+.inventory-table {
+
+  width: 100%;
+
+  border-collapse: collapse;
+
+  min-width: 950px;
+
+  background: #ffffff;
+
+  color: #111827;
+
+}
+
+
+/* TABLE HEADER */
+
+.inventory-table th {
+
+  padding: 14px 12px;
+
+  text-align: left;
+
+  font-size: 13px;
+
+  font-weight: 700;
+
+  white-space: nowrap;
+
+  background: #f5f6f8;
+
+  color: #111827;
+
+  border-bottom: 1px solid #ddd;
+
+}
+
+
+/* TABLE CELLS */
+
+.inventory-table td {
+
+  padding: 13px 12px;
+
+  font-size: 14px;
+
+  color: #111827;
+
+  background: #ffffff;
+
+  border-bottom: 1px solid #eee;
+
+  white-space: nowrap;
+
+}
+
+
+/* ROW HOVER */
+
+.inventory-table tbody tr:hover td {
+
+  background: #f9fafb;
+
+  color: #111827;
+
+}
+
+
+/* AVAILABLE */
+
+.inventory-status-available {
+
+  font-weight: 700;
+
+  color: #16a34a !important;
+
+}
+
+    .inventory-status-low {
+
+  font-weight: 700;
+
+  color: #f59e0b !important;
+
+}
+
+/* OUT OF STOCK */
+
+.inventory-status-out {
+
+  font-weight: 700;
+
+  color: #dc2626 !important;
+
+}
+
+
+/* =================================================
+   MOBILE
+================================================= */
+
+@media (max-width: 700px) {
+
+  .inventory-toolbar {
+
+    flex-direction: column;
+
+    align-items: stretch;
+
+  }
+
+
+  #inventoryRefreshButton {
+
+    width: 100%;
+
+  }
+
+}
+
+/* =================================================
+   INVENTORY PRODUCT DETAILS MODAL
+================================================= */
+
+.inventory-details-overlay {
+
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 99999;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  padding: 20px;
+
+  background: rgba(0, 0, 0, 0.65);
+
+}
+
+
+.inventory-details-card {
+
+  width: 100%;
+
+  max-width: 420px;
+
+  max-height: 90vh;
+
+  overflow-y: auto;
+
+  box-sizing: border-box;
+
+  background: #ffffff;
+
+  border-radius: 24px;
+
+  padding: 28px 24px;
+
+  box-shadow:
+    0 20px 60px rgba(0,0,0,0.30);
+
+}
+
+
+.inventory-details-header {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 15px;
+
+  margin-bottom: 22px;
+
+}
+
+
+.inventory-details-title {
+
+  font-size: 22px;
+
+  font-weight: 800;
+
+  color: #111827;
+
+}
+
+
+.inventory-details-close {
+
+  width: 42px;
+
+  height: 42px;
+
+  border: none;
+
+  border-radius: 50%;
+
+  background: #f1f2f4;
+
+  color: #111827;
+
+  font-size: 22px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+
+}
+
+
+.inventory-details-product-name {
+
+  text-align: center;
+
+  font-size: 25px;
+
+  font-weight: 800;
+
+  color: #111827;
+
+  margin-bottom: 22px;
+
+}
+
+
+.inventory-details-list {
+
+  background: #f5f6f8;
+
+  border-radius: 16px;
+
+  padding: 15px 16px;
+
+}
+
+
+.inventory-details-row {
+
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  gap: 15px;
+
+  padding: 12px 0;
+
+  border-bottom: 1px solid #ddd;
+
+}
+
+
+.inventory-details-row:last-child {
+
+  border-bottom: none;
+
+}
+
+
+.inventory-details-label {
+
+  color: #777;
+
+  font-size: 14px;
+
+}
+
+
+.inventory-details-value {
+
+  color: #111827;
+
+  font-size: 15px;
+
+  font-weight: 700;
+
+  text-align: right;
+
+}
+
+
+.inventory-details-close-button {
+
+  width: 100%;
+
+  margin-top: 22px;
+
+  padding: 15px;
+
+  border: none;
+
+  border-radius: 14px;
+
+  background: #111827;
+
+  color: white;
+
+  font-size: 17px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+
+}
+
+    /* =================================================
+   INVENTORY DETAILS - ADD STOCK BUTTON
+================================================= */
+
+.inventory-details-add-stock-button {
+
+  width: 100%;
+
+  margin-top: 22px;
+
+  padding: 15px;
+
+  border: none;
+
+  border-radius: 14px;
+
+  background: #16a34a;
+
+  color: white;
+
+  font-size: 17px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+
+}
+
+
+.inventory-details-add-stock-button:active {
+
+  transform: scale(0.98);
+
+}
+
+    /* =================================================
+   INVENTORY STATUS BADGE
+================================================= */
+
+.inventory-status-badge {
+
+  display: inline-block;
+
+  padding: 6px 10px;
+
+  border-radius: 999px;
+
+  font-size: 12px;
+
+  font-weight: 800;
+
+  white-space: nowrap;
+
+}
+
+
+/* AVAILABLE */
+
+.inventory-status-badge.inventory-status-available {
+
+  background: #dcfce7;
+
+  color: #16a34a !important;
+
+}
+
+
+/* LOW STOCK */
+
+.inventory-status-badge.inventory-status-low {
+
+  background: #fef3c7;
+
+  color: #f59e0b !important;
+
+}
+
+
+/* OUT OF STOCK */
+
+.inventory-status-badge.inventory-status-out {
+
+  background: #fee2e2;
+
+  color: #dc2626 !important;
+
+}
+
+/* =================================================
+   INVENTORY FILTER COUNT
+================================================= */
+
+.inventory-filter-count {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  min-width: 20px;
+
+  height: 20px;
+
+  margin-left: 4px;
+
+  padding: 0 5px;
+
+  box-sizing: border-box;
+
+  border-radius: 999px;
+
+  background: rgba(0, 0, 0, 0.08);
+
+  font-size: 11px;
+
+  font-weight: 800;
+
+}
+
+/* =================================================
+   EDIT PRODUCT BUTTON
+================================================= */
+
+.inventory-details-edit-button {
+
+  width: 100%;
+
+  margin-top: 10px;
+
+  padding: 14px;
+
+  border: none;
+
+  border-radius: 14px;
+
+  background: #f3f4f6;
+
+  color: #111827;
+
+  font-size: 16px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+
+}
+
+.inventory-details-edit-button:active {
+
+  transform: scale(0.98);
+
+}
+    
+  </style>
+
+</head>
+
+
+<body>
+
+
+<div class="app">
+
+
+  <!-- ===============================================
+       HEADER
+  ================================================ -->
+
+  <header class="top-header">
+
+    <div class="brand">
+
+      <div class="brand-icon">
+        🛒
+      </div>
+
+      <div>
+
+        <div class="brand-name">
+          EPIN SARI-SARI STORE
+        </div>
+
+        <div class="brand-subtitle">
+          MOBILE POS (Sales & Inventory)
+        </div>
+
+      </div>
+
+    </div>
+
+  </header>
+
+
+
+  <!-- ===============================================
+       DASHBOARD
+  ================================================ -->
+
+  <section
+    id="dashboardPage"
+    class="page active">
+
+
+    <div class="page-heading">
+
+      <div class="page-title">
+        Dashboard
+      </div>
+
+      <div class="page-description">
+        Here's your sales and inventory overview.
+      </div>
+
+    </div>
+
+
+    <!-- TODAY SALES -->
+
+    <div class="sales-card">
+
+      <div class="sales-label">
+        TODAY'S TOTAL SALES
+      </div>
+
+      <div
+        id="todaySales"
+        class="sales-value">
+
+        ₱0.00
+
+      </div>
+
+      <div
+        id="todayTransactions"
+        class="sales-today">
+
+        0 transactions today
+
+      </div>
+
+    </div>
+
+
+    <!-- STAT CARDS -->
+
+    <div class="stats-grid">
+
+
+      <div class="stat-card">
+
+        <div class="stat-icon">
+          📦
+        </div>
+
+        <div class="stat-label">
+          Total Products
+        </div>
+
+        <div
+          id="totalProducts"
+          class="stat-value">
+
+          0
+
+        </div>
+
+      </div>
+
+
+      <div class="stat-card">
+
+        <div class="stat-icon">
+          🏷️
+        </div>
+
+        <div class="stat-label">
+          Available Stock
+        </div>
+
+        <div
+          id="totalAvailable"
+          class="stat-value">
+
+          0
+
+        </div>
+
+      </div>
+
+
+    </div>
+
+
+    <!-- QUICK ACTIONS -->
+
+    <div class="section">
+
+      <div class="section-header">
+
+        <div class="section-title">
+          Quick Actions
+        </div>
+
+      </div>
+
+
+      <div class="action-grid">
+
+
+        <button
+          class="action"
+          onclick="showPage('pos')">
+
+          <div class="action-icon">
+            🛒
+          </div>
+
+          <span class="action-title">
+            POS
+          </span>
+
+          <span class="action-description">
+            Scan & sell products
+          </span>
+
+        </button>
+
+
+        <button
+          class="action"
+          onclick="showPage('addProduct')">
+
+          <div class="action-icon">
+            ➕
+          </div>
+
+          <span class="action-title">
+            Add Product
+          </span>
+
+          <span class="action-description">
+            Register new product
+          </span>
+
+        </button>
+
+
+        <button
+          class="action"
+          onclick="showPage('inventory')">
+
+          <div class="action-icon">
+            📦
+          </div>
+
+          <span class="action-title">
+            Inventory
+          </span>
+
+          <span class="action-description">
+            View available stock
+          </span>
+
+        </button>
+
+
+        <button
+          class="action"
+          onclick="showPage('sales')">
+
+          <div class="action-icon">
+            📊
+          </div>
+
+          <span class="action-title">
+            Sales
+          </span>
+
+          <span class="action-description">
+            View sales records
+          </span>
+
+        </button>
+
+
+      </div>
+
+    </div>
+
+
+    <!-- INVENTORY STATUS -->
+
+    <div class="section">
+
+      <div class="section-header">
+
+        <div class="section-title">
+          Inventory Status
+        </div>
+
+      </div>
+
+
+      <div class="inventory-status">
+
+
+        <div class="status-card">
+
+          <div
+            id="availableStatus"
+            class="status-number">
+
+            0
+
+          </div>
+
+          <div class="status-label">
+            Available
+          </div>
+
+        </div>
+
+
+        <div class="status-card">
+
+          <div
+            id="lowStock"
+            class="status-number">
+
+            0
+
+          </div>
+
+          <div class="status-label">
+            Low Stock
+          </div>
+
+        </div>
+
+
+        <div class="status-card">
+
+          <div
+            id="outOfStock"
+            class="status-number">
+
+            0
+
+          </div>
+
+          <div class="status-label">
+            Out of Stock
+          </div>
+
+        </div>
+
+
+      </div>
+
+    </div>
+
+
+  </section>
+
+
+
+  <!-- ===============================================
+       POS PAGE
+  ================================================ -->
+
+  <!-- ===============================================
+     POS PAGE
+================================================ -->
+
+<section
+  id="posPage"
+  class="page">
+
+
+  <div class="page-heading">
+
+    <div class="page-title">
+      Point of Sale
+    </div>
+
+    <div class="page-description">
+      Scan products and build the customer's order.
+    </div>
+
+  </div>
+
+
+  <!-- =============================================
+       SCANNER AREA
+  ============================================== -->
+
+  <div class="scanner-card">
+
+    <div class="scanner-header">
+
+      <div>
+
+        <div class="scanner-title">
+          Scan Product
+        </div>
+
+        <div class="scanner-subtitle">
+          Barcode scanner will appear here
+        </div>
+
+      </div>
+
+      <div class="scanner-icon">
+        📷
+      </div>
+
+    </div>
+
+
+    <div class="scanner-box">
+
+  <div
+    id="barcode-reader"
+    class="barcode-reader">
+  </div>
+
+</div>
+
+
+    <!-- Temporary manual barcode input.
+         This will later be replaced/combined
+         with the actual scanner. -->
+
+    <div class="manual-scan">
+
+      <input
+        id="manualBarcode"
+        type="text"
+        inputmode="numeric"
+        placeholder="Enter barcode manually">
+
+      <button
+        onclick="addBarcodeToCart()">
+
+        ADD
+
+      </button>
+
+    </div>
+
+  </div>
+
+
+
+  <!-- =============================================
+       CART
+  ============================================== -->
+
+  <div class="cart-section">
+
+
+    <div class="cart-header">
+
+      <div class="cart-title">
+        Current Order
+      </div>
+
+      <button
+        class="clear-cart-button"
+        onclick="clearCart()">
+
+        Clear
+
+      </button>
+
+    </div>
+
+
+    <div
+      id="cartItems"
+      class="cart-items">
+
+      <!-- Cart items generated by JavaScript -->
+
+    </div>
+
+
+    <!-- EMPTY CART -->
+
+    <div
+      id="emptyCart"
+      class="empty-cart">
+
+      <div class="empty-cart-icon">
+        🛒
+      </div>
+
+      <div class="empty-cart-title">
+        Cart is Empty
+      </div>
+
+      <div class="empty-cart-text">
+        Scan a product to add it to the order.
+      </div>
+
+    </div>
+
+
+  </div>
+
+
+
+  <!-- =============================================
+       TOTAL
+  ============================================== -->
+
+  <div class="total-card">
+
+
+    <div class="total-row">
+
+      <span>
+        Items
+      </span>
+
+      <strong id="cartItemCount">
+        0
+      </strong>
+
+    </div>
+
+
+    <div class="total-row">
+
+      <span>
+        Subtotal
+      </span>
+
+      <strong id="cartSubtotal">
+        ₱0.00
+      </strong>
+
+    </div>
+
+
+    <div class="total-divider"></div>
+
+
+    <div class="grand-total-row">
+
+      <span>
+        TOTAL
+      </span>
+
+      <strong id="cartTotal">
+        ₱0.00
+      </strong>
+
+    </div>
+
+
+    <button
+      id="checkoutButton"
+      class="checkout-button"
+      onclick="checkout()"
+      disabled>
+
+      CHECKOUT
+
+    </button>
+
+
+  </div>
+
+
+</section>
+
+
+
+  <!-- ===============================================
+       ADD PRODUCT PAGE
+  ================================================ -->
+
+  <!-- ===============================================
+     ADD PRODUCT PAGE
+================================================ -->
+
+<section
+  id="addProductPage"
+  class="page">
+
+  <div class="page-heading">
+
+    <div class="page-title">
+      Add Product
+    </div>
+
+    <div class="page-description">
+      Register a new product in your inventory.
+    </div>
+
+  </div>
+
+
+  <!-- =============================================
+     PRODUCT OPTIONS
+============================================= -->
+
+<div
+  id="productActionButtons"
+  class="product-action-buttons">
+
+  <button
+    type="button"
+    class="checkout-button"
+    onclick="showProductRegistrationForm()">
+
+    PRODUCT REGISTRATION
+
+  </button>
+
+
+  <button
+    type="button"
+    class="checkout-button"
+    onclick="showAddStockForm()">
+
+    ADD STOCK
+
+  </button>
+
+</div>
+  <!-- =============================================
+       ADD PRODUCT CARD
+  ============================================== -->
+
+  <div
+  id="productRegistrationForm"
+  class="scanner-card"
+  style="display:none;">
+
+    <div class="scanner-header">
+
+      <div>
+
+        <div class="scanner-title">
+          Product Registration
+        </div>
+
+        <div class="scanner-subtitle">
+          Enter the product information below.
+        </div>
+
+      </div>
+
+      <div class="scanner-icon">
+        ➕
+      </div>
+
+    </div>
+
+
+    <!-- BARCODE -->
+
+<div class="form-group">
+
+  <label for="addProductBarcode">
+    Barcode
+  </label>
+
+  <div class="barcode-input-row">
+
+    <input
+      id="addProductBarcode"
+      type="text"
+      inputmode="numeric"
+      placeholder="Enter or scan barcode"
+      autocomplete="off">
+
+    <button
+      id="scanAddProductButton"
+      type="button"
+      onclick="startAddProductScanner()">
+
+      📷 SCAN
+
+    </button>
+
+  </div>
+
+</div>
+
+
+<!-- ADD PRODUCT BARCODE SCANNER -->
+
+<div
+  id="addProductScannerContainer"
+  style="display:none;">
+
+  <div
+    id="add-product-barcode-reader">
+  </div>
+
+  <button
+    type="button"
+    onclick="stopAddProductScanner()">
+
+    STOP SCANNER
+
+  </button>
+
+</div>
+
+
+    <!-- PRODUCT ID -->
+
+    <div class="form-group">
+
+      <label for="addProductId">
+        Product ID
+      </label>
+
+      <input
+        id="addProductId"
+        type="text"
+        placeholder="Example: P001"
+        autocomplete="off">
+
+    </div>
+
+
+    <!-- PRODUCT NAME -->
+
+    <div class="form-group">
+
+      <label for="addProductName">
+        Product Name
+      </label>
+
+      <input
+        id="addProductName"
+        type="text"
+        placeholder="Example: TINAPA"
+        autocomplete="off">
+
+    </div>
+
+
+    <!-- PRICE -->
+
+    <div class="form-group">
+
+      <label for="addProductPrice">
+        Selling Price
+      </label>
+
+      <input
+        id="addProductPrice"
+        type="number"
+        min="0"
+        step="0.01"
+        placeholder="₱0.00"
+        autocomplete="off">
+
+    </div>
+
+
+    <!-- BEGINNING STOCK -->
+
+    <div class="form-group">
+
+      <label for="addProductStock">
+        Beginning Stock
+      </label>
+
+      <input
+        id="addProductStock"
+        type="number"
+        min="0"
+        step="1"
+        placeholder="Enter beginning stock"
+        autocomplete="off">
+
+    </div>
+
+
+    <!-- REGISTER BUTTON -->
+
+    <button
+      id="registerProductButton"
+      class="checkout-button"
+      type="button"
+      onclick="registerNewProduct()">
+
+      REGISTER PRODUCT
+
+    </button>
+    <!-- STATUS -->
+
+    <div
+      id="addProductStatus"
+      class="scanner-status">
+
+      Ready to register a product.
+
+    </div>
+
+  </div>
+
+  
+
+
+    <!-- =================================================
+     ADD STOCK
+================================================= -->
+<!-- =================================================
+     ADD STOCK
+================================================= -->
+
+<div
+  id="addStockForm"
+  style="display:none;">
+
+  <div class="scanner-card">
+
+    
+
+    <h3>ADD STOCK</h3>
+
+  <!-- BARCODE -->
+
+  <div class="form-group">
+
+    <label for="addStockBarcode">
+      Barcode
+    </label>
+
+    <div class="barcode-input-row">
+
+      <input
+        id="addStockBarcode"
+        type="text"
+        inputmode="numeric"
+        placeholder="Enter or scan barcode"
+        autocomplete="off">
+
+      <button
+        id="scanAddStockButton"
+        type="button"
+        onclick="startAddStockScanner()">
+
+        📷 SCAN
+
+      </button>
+
+    </div>
+
+  </div>
+
+<!-- =================================================
+     ADD STOCK SCANNER
+================================================= -->
+
+<div
+  id="addStockScannerContainer"
+  style="display:none;">
+
+  <div
+    id="add-stock-barcode-reader">
+  </div>
+
+  <button
+    type="button"
+    onclick="stopAddStockScanner()">
+
+    STOP SCANNER
+
+  </button>
+
+</div>
+  <!-- PRODUCT NAME -->
+
+  <div class="form-group">
+
+    <label for="addStockProductName">
+      Product
+    </label>
+
+    <input
+      id="addStockProductName"
+      type="text"
+      placeholder="Product name"
+      readonly>
+
+  </div>
+
+
+  <!-- CURRENT STOCK -->
+
+  <div class="form-group">
+
+    <label for="addStockCurrent">
+      Current Stock
+    </label>
+
+    <input
+      id="addStockCurrent"
+      type="number"
+      placeholder="Current stock"
+      readonly>
+
+  </div>
+
+
+  <!-- QUANTITY TO ADD -->
+
+  <div class="form-group">
+
+    <label for="addStockQuantity">
+      Quantity to Add
+    </label>
+
+    <input
+      id="addStockQuantity"
+      type="number"
+      min="1"
+      step="1"
+      placeholder="Enter quantity">
+
+  </div>
+
+
+  <!-- ADD STOCK BUTTON -->
+
+  <button
+    id="addStockButton"
+    class="checkout-button"
+    type="button"
+    onclick="addStockToProduct()">
+
+    ADD STOCK
+
+  </button>
+
+</div>
+
+</div>
+
+
+  <button
+      type="button"
+      class="checkout-button"
+      onclick="showProductActionButtons()">
+
+      ← BACK
+
+    </button>
+</section>
+
+
+  <!-- =================================================
+     INVENTORY PAGE
+================================================= -->
+
+<section
+  id="inventoryPage"
+  class="page">
+
+  <div class="page-heading">
+
+    <div class="page-title">
+      Inventory
+    </div>
+
+    <div class="page-description">
+      View and manage your current product inventory.
+    </div>
+
+  </div>
+
+
+  <!-- =================================================
+       INVENTORY CARD
+  ================================================= -->
+
+  <div class="scanner-card">
+
+    <div class="scanner-header">
+
+      <div>
+
+        <div class="scanner-title">
+          Product Inventory
+        </div>
+
+        <div class="scanner-subtitle">
+          Search and view your registered products.
+        </div>
+
+      </div>
+
+      <div class="scanner-icon">
+        📦
+      </div>
+
+    </div>
+
+
+    <!-- =================================================
+     SEARCH + REFRESH
+================================================= -->
+
+<div class="inventory-toolbar">
+
+  <div class="inventory-search">
+
+    <input
+      id="inventorySearch"
+      type="text"
+      placeholder="Search barcode, product ID, or product name..."
+      autocomplete="off">
+
+  </div>
+
+
+  <button
+    id="inventoryRefreshButton"
+    type="button"
+    class="checkout-button"
+    onclick="loadInventory()">
+
+    🔄 REFRESH
+
+  </button>
+
+</div>
+
+
+<!-- =================================================
+     INVENTORY FILTERS
+================================================= -->
+
+<div class="inventory-filters">
+
+  <button
+    type="button"
+    class="inventory-filter-button active"
+    data-filter="ALL"
+    onclick="filterInventory('ALL')">
+
+    ALL
+<span class="inventory-filter-count">0</span>
+
+  </button>
+
+
+  <button
+    type="button"
+    class="inventory-filter-button"
+    data-filter="AVAILABLE"
+    onclick="filterInventory('AVAILABLE')">
+
+    🟢 AVAILABLE
+    <span class="inventory-filter-count">0</span>
+
+  </button>
+
+
+  <button
+    type="button"
+    class="inventory-filter-button"
+    data-filter="LOW STOCK"
+    onclick="filterInventory('LOW STOCK')">
+
+    🟠 LOW STOCK
+    <span class="inventory-filter-count">0</span>
+  </button>
+
+
+  <button
+    type="button"
+    class="inventory-filter-button"
+    data-filter="OUT OF STOCK"
+    onclick="filterInventory('OUT OF STOCK')">
+
+    🔴 OUT OF STOCK
+    <span class="inventory-filter-count">0</span>
+  </button>
+
+</div>
+  </div>
+
+    <!-- =================================================
+         STATUS
+    ================================================= -->
+
+    <div
+      id="inventoryStatus"
+      class="inventory-status">
+
+      Loading inventory...
+
+    </div>
+
+
+    <!-- =================================================
+         INVENTORY TABLE
+    ================================================= -->
+
+    <div class="inventory-table-wrapper">
+
+      <table
+        id="inventoryTable"
+        class="inventory-table">
+
+        <thead>
+
+          <tr>
+
+            <th>
+              Barcode
+            </th>
+
+            <th>
+              Product ID
+            </th>
+
+            <th>
+              Product Name
+            </th>
+
+            <th>
+              Price
+            </th>
+
+            <th>
+              Beginning Stock
+            </th>
+
+            <th>
+              Sold
+            </th>
+
+            <th>
+              Available
+            </th>
+
+            <th>
+              Status
+            </th>
+
+          </tr>
+
+        </thead>
+
+        <tbody
+          id="inventoryTableBody">
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+</section>
+
+  <!-- ===============================================
+       SALES PAGE
+  ================================================ -->
+
+  <section
+    id="salesPage"
+    class="page">
+
+
+    <div class="page-heading">
+
+      <div class="page-title">
+        Sales
+      </div>
+
+      <div class="page-description">
+        Review your sales and transactions.
+      </div>
+
+    </div>
+
+
+    <div class="empty-page">
+
+      <div class="empty-icon">
+        📊
+      </div>
+
+      <div class="empty-title">
+        Sales Coming Next
+      </div>
+
+      <div class="empty-text">
+        Sales records and reports will
+        be added in a later part.
+      </div>
+
+    </div>
+
+
+  </section>
+
+
+
+  <!-- ===============================================
+       BOTTOM NAVIGATION
+  ================================================ -->
+
+  <nav class="bottom-nav">
+
+
+    <button
+      id="navDashboard"
+      class="nav-item active"
+      onclick="showPage('dashboard')">
+
+      <span class="nav-icon">
+        🏠
+      </span>
+
+      <span class="nav-label">
+        Dashboard
+      </span>
+
+    </button>
+
+
+    <button
+      id="navPOS"
+      class="nav-item"
+      onclick="showPage('pos')">
+
+      <span class="nav-icon">
+        🛒
+      </span>
+
+      <span class="nav-label">
+        POS
+      </span>
+
+    </button>
+
+
+    <button
+      id="navInventory"
+      class="nav-item"
+      onclick="showPage('inventory')">
+
+      <span class="nav-icon">
+        📦
+      </span>
+
+      <span class="nav-label">
+        Stock
+      </span>
+
+    </button>
+
+
+    <button
+      id="navSales"
+      class="nav-item"
+      onclick="showPage('sales')">
+
+      <span class="nav-icon">
+        📊
+      </span>
+
+      <span class="nav-label">
+        Sales
+      </span>
+
+    </button>
+
+
+  </nav>
+
+
+</div>
+
+
+
+
+
+<!-- ===============================================
+     TRANSACTION RECEIPT MODAL
+================================================ -->
+
+<div id="receiptModal" class="receipt-modal" style="display:none;">
+  <div class="receipt-overlay"></div>
+
+  <div class="receipt-box">
+
+    <div class="receipt-success-icon">✓</div>
+
+    <div class="receipt-title">Transaction Completed!</div>
+    <div class="receipt-subtitle">Payment has been successfully recorded.</div>
+
+    <div class="receipt-id-box">
+      <div class="receipt-id-label">TRANSACTION ID</div>
+      <div id="receiptTransactionId" class="receipt-id">—</div>
+    </div>
+
+    <div class="receipt-summary">
+      <div class="receipt-row">
+        <span>Items</span>
+        <strong id="receiptItems">0</strong>
+      </div>
+
+      <div class="receipt-row">
+        <span>Total</span>
+        <strong id="receiptTotal">₱0.00</strong>
+      </div>
+
+      <div class="receipt-row">
+        <span>Cash Received</span>
+        <strong id="receiptCash">₱0.00</strong>
+      </div>
+
+      <div class="receipt-row receipt-change-row">
+        <span>Change</span>
+        <strong id="receiptChange">₱0.00</strong>
+      </div>
+
+      <div class="receipt-row receipt-total-row">
+        <span>AMOUNT PAID</span>
+        <strong id="receiptPaid">₱0.00</strong>
+      </div>
+    </div>
+
+    <button type="button" class="receipt-done-button" onclick="closeReceiptModal()">DONE</button>
+
+  </div>
+</div>
+
+
+
+<!-- ===============================================
+     POS ALERT MODAL
+================================================ -->
+
+<div id="posAlertModal" class="pos-alert-modal" style="display:none;">
+  <div class="pos-alert-overlay" onclick="closePOSAlert()"></div>
+
+  <div class="pos-alert-box" role="dialog" aria-modal="true" aria-labelledby="posAlertTitle">
+    <div id="posAlertIcon" class="pos-alert-icon">!</div>
+    <div id="posAlertTitle" class="pos-alert-title">OUT OF STOCK</div>
+    <div id="posAlertProduct" class="pos-alert-product">—</div>
+    <div id="posAlertMessage" class="pos-alert-message">This product is currently unavailable.</div>
+    <div id="posAlertStock" class="pos-alert-stock" style="display:none;"></div>
+    <button type="button" class="pos-alert-button" onclick="closePOSAlert()">OK</button>
+  </div>
+</div>
+
+<!-- ===============================================
+     PAYMENT MODAL
+================================================ -->
+
+<div id="paymentModal" class="payment-modal" style="display:none;">
+  <div class="payment-modal-overlay"></div>
+
+  <div class="payment-modal-box">
+
+    <div class="payment-modal-header">
+      <div>
+        <div class="payment-modal-title">Payment</div>
+        <div class="payment-modal-subtitle">Complete customer's payment</div>
+      </div>
+
+      <button type="button" class="payment-close-button" onclick="closePaymentModal()">×</button>
+    </div>
+
+    <div class="payment-total-box">
+      <div class="payment-label">TOTAL DUE</div>
+      <div id="paymentTotal" class="payment-total">₱0.00</div>
+    </div>
+
+    <div class="payment-input-section">
+      <label for="cashReceived" class="payment-input-label">CASH RECEIVED</label>
+      <div class="payment-input-wrapper">
+        <span class="payment-currency">₱</span>
+        <input id="cashReceived" type="number" inputmode="decimal" min="0" step="0.01" placeholder="0.00" autocomplete="off">
+      </div>
+    </div>
+
+    <div class="payment-change-box">
+      <div class="payment-change-label">CHANGE</div>
+      <div id="paymentChange" class="payment-change">₱0.00</div>
+    </div>
+
+    <div id="paymentMessage" class="payment-message" style="display:none;"></div>
+
+    <div class="payment-buttons">
+      <button type="button" class="payment-cancel-button" onclick="closePaymentModal()">CANCEL</button>
+      <button type="button" id="completePaymentButton" class="payment-complete-button" onclick="completePayment()" disabled>COMPLETE PAYMENT</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ===============================================
+     LOADING
+================================================ -->
+
+<div
+  id="loading"
+  class="loading">
+
+  <div class="loading-box">
+
+    <div class="spinner"></div>
+
+    <div>
+      Loading Mobile POS...
+    </div>
+
+  </div>
+
+</div>
+
+
+
+<script>
+
+ /*******************************************************
+ * GOOGLE APPS SCRIPT WEB APP URL
+ *******************************************************/
+
+const API_URL =
+  "https://script.google.com/macros/s/AKfycbxQDcGzC2LMuDGawzSIRZPmVmIMWDSJrRzsNNl-Q566HTUX-KU1G_2FWRwZZjmjNdpyQw/exec";
+  /* =================================================
+     JSONP API HELPER
+     GitHub Pages -> Google Apps Script
+  ================================================= */
+
+  function callPOSApi(action, params, success, failure) {
+
+    const callbackName =
+      "mobilePOSCallback_" + Date.now() + "_" +
+      Math.floor(Math.random() * 1000000);
+
+    const query = new URLSearchParams();
+    query.set("action", action);
+    query.set("callback", callbackName);
+
+    if (params) {
+      Object.keys(params).forEach(function(key) {
+        query.set(key, String(params[key]));
+      });
+    }
+
+    const script = document.createElement("script");
+    let finished = false;
+
+    function finish() {
+      if (finished) return false;
+      finished = true;
+      clearTimeout(timeout);
+      try { delete window[callbackName]; }
+      catch (e) { window[callbackName] = undefined; }
+      if (script.parentNode) script.parentNode.removeChild(script);
+      return true;
+    }
+
+    const timeout = setTimeout(function() {
+      if (!finish()) return;
+      console.error("Mobile POS API timeout:", action);
+      if (typeof failure === "function") {
+        failure(new Error("The Mobile POS server did not respond."));
+      }
+    }, 12000);
+
+    window[callbackName] = function(result) {
+      if (!finish()) return;
+      console.log("Mobile POS API response:", action, result);
+      if (typeof success === "function") success(result);
+    };
+
+    script.onerror = function() {
+      if (!finish()) return;
+      console.error("Mobile POS API connection error:", action);
+      if (typeof failure === "function") {
+        failure(new Error("Unable to connect to the Mobile POS server."));
+      }
+    };
+
+    const requestURL = API_URL + "?" + query.toString();
+    console.log("Mobile POS API request:", requestURL);
+
+    script.async = true;
+    script.src = requestURL;
+    document.head.appendChild(script);
+  }
+
+
+  /* =================================================
+   ADD PRODUCT BARCODE SCANNER
+================================================= */
+
+let addProductScanner = null;
+let addProductScannerRunning = false;
+
+
+/* =================================================
+   START ADD PRODUCT SCANNER
+================================================= */
+
+function startAddProductScanner() {
+
+  /* Unlock browser audio */
+
+  try {
+
+    if (!barcodeAudioContext) {
+
+      barcodeAudioContext =
+        new (
+          window.AudioContext ||
+          window.webkitAudioContext
+        )();
+
+    }
+
+    if (
+      barcodeAudioContext.state ===
+      "suspended"
+    ) {
+
+      barcodeAudioContext.resume();
+
+    }
+
+  } catch (error) {
+
+    console.warn(
+      "Audio initialization failed:",
+      error
+    );
+
+  }
+
+
+  // EXISTING CODE CONTINUES HERE...
+  const container =
+    document.getElementById(
+      "addProductScannerContainer"
+    );
+
+  const reader =
+    document.getElementById(
+      "add-product-barcode-reader"
+    );
+
+  if (!container || !reader) {
+
+    alert(
+      "Add Product scanner area was not found."
+    );
+
+    return;
+
+  }
+
+
+  if (
+    addProductScannerRunning
+  ) {
+
+    return;
+
+  }
+
+
+  container.style.display =
+    "block";
+
+
+  addProductScanner =
+    new Html5Qrcode(
+      "add-product-barcode-reader"
+    );
+
+
+  addProductScanner.start(
+
+    {
+      facingMode: "environment"
+    },
+
+    {
+      fps: 10,
+
+      qrbox: {
+        width: 280,
+        height: 150
+      }
+
+    },
+
+    function(decodedText) {
+
+      const barcode =
+        String(
+          decodedText
+        ).trim();
+
+
+      if (!barcode) {
+        return;
+      }
+
+
+      console.log(
+        "ADD PRODUCT BARCODE DETECTED:",
+        barcode
+      );
+      playBarcodeScanSound();
+
+
+      const input =
+        document.getElementById(
+          "addProductBarcode"
+        );
+
+
+      if (input) {
+
+        input.value =
+          barcode;
+
+        input.dispatchEvent(
+          new Event(
+            "input",
+            {
+              bubbles: true
+            }
+          )
+        );
+
+      }
+
+
+      stopAddProductScanner();
+
+
+      if (input) {
+        input.focus();
+      }
+
+    },
+
+    function(errorMessage) {
+
+      // Normal scanner decoding errors.
+      // Do not display an alert for these.
+
+    }
+
+  )
+
+  .then(function() {
+
+    addProductScannerRunning =
+      true;
+
+  })
+
+  .catch(function(error) {
+
+    console.error(
+      "ADD PRODUCT SCANNER ERROR:",
+      error
+    );
+
+    container.style.display =
+      "none";
+
+    addProductScanner =
+      null;
+
+    addProductScannerRunning =
+      false;
+
+
+    alert(
+      "Unable to start the camera scanner."
+    );
+
+  });
+
+}
+
+
+/* =================================================
+   STOP ADD PRODUCT SCANNER
+================================================= */
+
+function stopAddProductScanner() {
+
+  if (
+    !addProductScanner
+  ) {
+
+    const container =
+      document.getElementById(
+        "addProductScannerContainer"
+      );
+
+    if (container) {
+      container.style.display =
+        "none";
+    }
+
+    return;
+
+  }
+
+
+  addProductScanner
+    .stop()
+
+    .then(function() {
+
+      return addProductScanner.clear();
+
+    })
+
+    .catch(function(error) {
+
+      console.warn(
+        "Scanner stop warning:",
+        error
+      );
+
+    })
+
+    .finally(function() {
+
+      addProductScanner =
+        null;
+
+      addProductScannerRunning =
+        false;
+
+
+      const container =
+        document.getElementById(
+          "addProductScannerContainer"
+        );
+
+
+      if (container) {
+
+        container.style.display =
+          "none";
+
+      }
+
+    });
+
+}
+
+/* =================================================
+   BARCODE SCAN SOUND
+================================================= */
+
+/* =================================================
+   BARCODE SCAN SOUND
+================================================= */
+
+let barcodeAudioContext = null;
+
+function playBarcodeScanSound() {
+
+  try {
+
+    if (!barcodeAudioContext) {
+
+      barcodeAudioContext =
+        new (
+          window.AudioContext ||
+          window.webkitAudioContext
+        )();
+
+    }
+
+
+    const playBeep = function() {
+
+      const oscillator =
+        barcodeAudioContext.createOscillator();
+
+      const gainNode =
+        barcodeAudioContext.createGain();
+
+
+      oscillator.type =
+        "sine";
+
+      oscillator.frequency.setValueAtTime(
+        1200,
+        barcodeAudioContext.currentTime
+      );
+
+
+      gainNode.gain.setValueAtTime(
+        0.30,
+        barcodeAudioContext.currentTime
+      );
+
+      gainNode.gain.exponentialRampToValueAtTime(
+        0.001,
+        barcodeAudioContext.currentTime + 0.20
+      );
+
+
+      oscillator.connect(
+        gainNode
+      );
+
+      gainNode.connect(
+        barcodeAudioContext.destination
+      );
+
+
+      oscillator.start();
+
+      oscillator.stop(
+        barcodeAudioContext.currentTime + 0.20
+      );
+
+    };
+
+
+    if (
+      barcodeAudioContext.state ===
+      "suspended"
+    ) {
+
+      barcodeAudioContext
+        .resume()
+        .then(function() {
+
+          playBeep();
+
+        })
+        .catch(function(error) {
+
+          console.error(
+            "Unable to resume audio:",
+            error
+          );
+
+        });
+
+    } else {
+
+      playBeep();
+
+    }
+
+
+  } catch (error) {
+
+    console.error(
+      "Barcode scan sound error:",
+      error
+    );
+
+  }
+
+}
+
+  /* =================================================
+   ADD STOCK BARCODE SCANNER
+================================================= */
+
+let addStockScanner = null;
+let addStockScannerRunning = false;
+
+
+/* =================================================
+   START ADD STOCK SCANNER
+================================================= */
+
+function startAddStockScanner() {
+
+  const container =
+    document.getElementById(
+      "addStockScannerContainer"
+    );
+
+  const reader =
+    document.getElementById(
+      "add-stock-barcode-reader"
+    );
+
+
+  if (!container || !reader) {
+
+    alert(
+      "Add Stock scanner area was not found."
+    );
+
+    return;
+
+  }
+
+
+  if (
+    addStockScannerRunning
+  ) {
+
+    return;
+
+  }
+
+
+  container.style.display =
+    "block";
+
+
+  addStockScanner =
+    new Html5Qrcode(
+      "add-stock-barcode-reader"
+    );
+
+
+  addStockScanner.start(
+
+    {
+      facingMode: "environment"
+    },
+
+    {
+      fps: 10,
+
+      qrbox: {
+        width: 280,
+        height: 150
+      }
+
+    },
+
+    function(decodedText) {
+
+      const barcode =
+        String(
+          decodedText
+        ).trim();
+
+
+      if (!barcode) {
+        return;
+      }
+
+
+      console.log(
+        "ADD STOCK BARCODE DETECTED:",
+        barcode
+      );
+
+
+      /* =========================================
+         PLAY SCAN SOUND
+      ========================================= */
+
+      playBarcodeScanSound();
+
+
+      /* =========================================
+         PUT BARCODE INTO INPUT
+      ========================================= */
+
+      const input =
+        document.getElementById(
+          "addStockBarcode"
+        );
+
+
+      if (input) {
+
+        input.value =
+          barcode;
+
+        input.dispatchEvent(
+          new Event(
+            "input",
+            {
+              bubbles: true
+            }
+          )
+        );
+
+      }
+      findProductForAddStock(barcode);
+
+
+      /* =========================================
+         STOP SCANNER
+      ========================================= */
+
+      stopAddStockScanner();
+
+
+      if (input) {
+        input.focus();
+      }
+
+    },
+
+    function(errorMessage) {
+
+      // Normal scanner decoding errors.
+      // Do not display alerts.
+
+    }
+
+  )
+
+  .then(function() {
+
+    addStockScannerRunning =
+      true;
+
+  })
+
+  .catch(function(error) {
+
+    console.error(
+      "ADD STOCK SCANNER ERROR:",
+      error
+    );
+
+
+    container.style.display =
+      "none";
+
+
+    addStockScanner =
+      null;
+
+
+    addStockScannerRunning =
+      false;
+
+
+    alert(
+      "Unable to start the camera scanner."
+    );
+
+  });
+
+}
+
+
+/* =================================================
+   STOP ADD STOCK SCANNER
+================================================= */
+
+function stopAddStockScanner() {
+
+  if (
+    !addStockScanner
+  ) {
+
+    const container =
+      document.getElementById(
+        "addStockScannerContainer"
+      );
+
+    if (container) {
+
+      container.style.display =
+        "none";
+
+    }
+
+    return;
+
+  }
+
+
+  addStockScanner
+    .stop()
+
+    .then(function() {
+
+      return addStockScanner.clear();
+
+    })
+
+    .catch(function(error) {
+
+      console.warn(
+        "Add Stock scanner stop warning:",
+        error
+      );
+
+    })
+
+    .finally(function() {
+
+      addStockScanner =
+        null;
+
+
+      addStockScannerRunning =
+        false;
+
+
+      const container =
+        document.getElementById(
+          "addStockScannerContainer"
+        );
+
+
+      if (container) {
+
+        container.style.display =
+          "none";
+
+      }
+
+    });
+
+}
+
+  /* =================================================
+   FIND PRODUCT FOR ADD STOCK
+================================================= */
+
+function findProductForAddStock(barcode) {
+
+  const productNameInput =
+    document.getElementById(
+      "addStockProductName"
+    );
+
+  const currentStockInput =
+    document.getElementById(
+      "addStockCurrent"
+    );
+
+
+  if (!barcode) {
+
+    return;
+
+  }
+
+
+  /* =============================================
+     CLEAR OLD PRODUCT INFORMATION
+  ============================================= */
+
+  if (productNameInput) {
+    productNameInput.value = "";
+  }
+
+  if (currentStockInput) {
+    currentStockInput.value = "";
+  }
+
+
+  /* =============================================
+     LOOK UP PRODUCT
+  ============================================= */
+
+  callPOSApi(
+
+    "product",
+
+    {
+      barcode: barcode
+    },
+
+    function(result) {
+
+      console.log(
+        "ADD STOCK PRODUCT RESPONSE:",
+        result
+      );
+
+
+      if (
+        !result ||
+        result.success !== true
+      ) {
+
+        alert(
+          result &&
+          result.message
+            ? result.message
+            : "Product was not found."
+        );
+
+        return;
+
+      }
+
+
+      /* =========================================
+         GET PRODUCT DATA
+      ========================================= */
+
+      const product =
+        result.product;
+
+
+      if (!product) {
+
+        alert(
+          "Product information was not returned."
+        );
+
+        return;
+
+      }
+
+
+      /* =========================================
+         DISPLAY PRODUCT NAME
+      ========================================= */
+
+      if (productNameInput) {
+
+        productNameInput.value =
+          product.productName || "";
+
+      }
+
+
+      /* =========================================
+         DISPLAY CURRENT STOCK
+      ========================================= */
+
+      if (currentStockInput) {
+
+        currentStockInput.value =
+          Number(
+            product.available
+          ) || 0;
+
+      }
+
+    },
+
+    function(error) {
+
+      console.error(
+        "ADD STOCK PRODUCT LOOKUP ERROR:",
+        error
+      );
+
+
+      alert(
+
+        error &&
+        error.message
+
+          ? error.message
+
+          : "Unable to find the product."
+
+      );
+
+    }
+
+  );
+
+}
+
+  /* =================================================
+   ADD STOCK TO PRODUCT
+================================================= */
+
+function addStockToProduct() {
+
+  const barcodeInput =
+    document.getElementById(
+      "addStockBarcode"
+    );
+
+  const productNameInput =
+    document.getElementById(
+      "addStockProductName"
+    );
+
+  const currentStockInput =
+    document.getElementById(
+      "addStockCurrent"
+    );
+
+  const quantityInput =
+    document.getElementById(
+      "addStockQuantity"
+    );
+
+  const button =
+    document.getElementById(
+      "addStockButton"
+    );
+
+
+  /* =============================================
+     CHECK ELEMENTS
+  ============================================= */
+
+  if (
+    !barcodeInput ||
+    !productNameInput ||
+    !currentStockInput ||
+    !quantityInput ||
+    !button
+  ) {
+
+    alert(
+      "Add Stock form is incomplete."
+    );
+
+    return;
+
+  }
+
+
+  /* =============================================
+     READ VALUES
+  ============================================= */
+
+  const barcode =
+    String(
+      barcodeInput.value
+    ).trim();
+
+
+  const productName =
+    String(
+      productNameInput.value
+    ).trim();
+
+
+  const quantity =
+    Number(
+      quantityInput.value
+    );
+
+  const previousStock =
+  Number(
+    currentStockInput.value
+  ) || 0;
+
+
+  /* =============================================
+     VALIDATE BARCODE
+  ============================================= */
+
+  if (!barcode) {
+
+    alert(
+      "Please scan or enter a barcode."
+    );
+
+    barcodeInput.focus();
+
+    return;
+
+  }
+
+
+  /* =============================================
+     VALIDATE PRODUCT
+  ============================================= */
+
+  if (!productName) {
+
+    alert(
+      "Please scan a valid existing product first."
+    );
+
+    barcodeInput.focus();
+
+    return;
+
+  }
+
+
+  /* =============================================
+     VALIDATE QUANTITY
+  ============================================= */
+
+  if (
+    !Number.isFinite(quantity) ||
+    quantity <= 0
+  ) {
+
+    alert(
+      "Please enter a valid quantity to add."
+    );
+
+    quantityInput.focus();
+
+    return;
+
+  }
+
+
+  /* =============================================
+     DISABLE BUTTON
+  ============================================= */
+
+  button.disabled =
+    true;
+
+  button.textContent =
+    "ADDING...";
+
+
+  /* =============================================
+     PREPARE DATA
+  ============================================= */
+
+  const stockData = {
+
+    barcode:
+      barcode,
+
+    quantity:
+      quantity
+
+  };
+
+
+  console.log(
+    "ADDING STOCK:",
+    stockData
+  );
+
+
+  /* =============================================
+     SEND TO APPS SCRIPT
+  ============================================= */
+
+  callPOSApi(
+
+    "addStock",
+
+    {
+      data:
+        JSON.stringify(
+          stockData
+        )
+    },
+
+
+    function(result) {
+
+      console.log(
+        "ADD STOCK RESPONSE:",
+        result
+      );
+
+
+      button.disabled =
+        false;
+
+      button.textContent =
+        "ADD STOCK";
+
+
+      /* =========================================
+         FAILED
+      ========================================= */
+
+      if (
+        !result ||
+        result.success !== true
+      ) {
+
+        alert(
+
+          result &&
+          result.message
+
+            ? result.message
+
+            : "Unable to add stock."
+
+        );
+
+        return;
+
+      }
+
+
+      /* =========================================
+         SUCCESS
+      ========================================= */
+
+      const product =
+        result.product || {};
+showAddStockSuccessMessage({
+
+  productName:
+    product.productName ||
+    productName,
+
+  barcode:
+    barcode,
+
+  addedStock:
+    product.addedStock ||
+    quantity,
+
+  previousStock:
+    previousStock,
+
+  available:
+    product.available || 0
+
+});
+
+
+      /* =========================================
+         UPDATE CURRENT STOCK DISPLAY
+      ========================================= */
+
+      if (currentStockInput) {
+
+        currentStockInput.value =
+          Number(
+            product.available
+          ) || 0;
+
+      }
+
+
+      /* =========================================
+         CLEAR QUANTITY
+      ========================================= */
+
+      quantityInput.value =
+        "";
+
+      quantityInput.focus();
+
+    },
+
+
+    function(error) {
+
+      console.error(
+        "ADD STOCK ERROR:",
+        error
+      );
+
+
+      button.disabled =
+        false;
+
+      button.textContent =
+        "ADD STOCK";
+
+
+      alert(
+
+        error &&
+        error.message
+
+          ? error.message
+
+          : "Unable to connect to the Mobile POS server."
+
+      );
+
+    }
+
+  );
+
+}
+
+  /* =================================================
+   PRODUCT ACTION FORM SWITCHING
+================================================= */
+
+function showProductRegistrationForm(barcode) {
+
+  const buttons =
+    document.getElementById(
+      "productActionButtons"
+    );
+
+  const registrationForm =
+    document.getElementById(
+      "productRegistrationForm"
+    );
+
+  const addStockForm =
+    document.getElementById(
+      "addStockForm"
+    );
+
+
+  if (buttons) {
+    buttons.style.display = "none";
+  }
+
+  if (registrationForm) {
+    registrationForm.style.display = "block";
+  }
+
+  if (addStockForm) {
+    addStockForm.style.display = "none";
+  }
+
+
+  /* =============================================
+     PRE-FILL BARCODE WHEN OPENED FROM POS
+  ============================================= */
+
+  if (barcode) {
+
+    const barcodeInput =
+      document.getElementById(
+        "addProductBarcode"
+      );
+
+    if (barcodeInput) {
+      barcodeInput.value =
+        String(barcode).trim();
+    }
+
+  }
+
+}
+
+
+/* =================================================
+   SHOW ADD STOCK FORM
+================================================= */
+
+function showAddStockForm() {
+
+  const buttons =
+    document.getElementById(
+      "productActionButtons"
+    );
+
+  const registrationForm =
+    document.getElementById(
+      "productRegistrationForm"
+    );
+
+  const addStockForm =
+    document.getElementById(
+      "addStockForm"
+    );
+
+
+  if (buttons) {
+
+    buttons.style.display =
+      "none";
+
+  }
+
+
+  if (registrationForm) {
+
+    registrationForm.style.display =
+      "none";
+
+  }
+
+
+  if (addStockForm) {
+
+    addStockForm.style.display =
+      "block";
+
+  }
+
+}
+/* =================================================
+   BACK TO PRODUCT ACTIONS
+================================================= */
+
+function showProductActionButtons() {
+
+  const buttons =
+    document.getElementById(
+      "productActionButtons"
+    );
+
+  const registrationForm =
+    document.getElementById(
+      "productRegistrationForm"
+    );
+
+  const addStockForm =
+    document.getElementById(
+      "addStockForm"
+    );
+
+
+  if (buttons) {
+    buttons.style.display = "block";
+  }
+
+  if (registrationForm) {
+    registrationForm.style.display = "none";
+  }
+
+  if (addStockForm) {
+    addStockForm.style.display = "none";
+  }
+
+}
+  /* =================================================
+   REGISTER NEW PRODUCT
+================================================= */
+
+  
+function registerNewProduct() {
+
+  const barcodeInput =
+    document.getElementById(
+      "addProductBarcode"
+    );
+
+  const productIdInput =
+    document.getElementById(
+      "addProductId"
+    );
+
+  const productNameInput =
+    document.getElementById(
+      "addProductName"
+    );
+
+  const priceInput =
+    document.getElementById(
+      "addProductPrice"
+    );
+
+  const stockInput =
+    document.getElementById(
+      "addProductStock"
+    );
+
+  const button =
+    document.getElementById(
+      "registerProductButton"
+    );
+
+
+  /* =============================================
+     CHECK INPUT ELEMENTS
+  ============================================= */
+
+  if (
+    !barcodeInput ||
+    !productIdInput ||
+    !productNameInput ||
+    !priceInput ||
+    !stockInput ||
+    !button
+  ) {
+
+    console.error(
+      "ADD PRODUCT FORM ELEMENT NOT FOUND."
+    );
+
+    alert(
+      "Add Product form is incomplete."
+    );
+
+    return;
+
+  }
+
+
+  /* =============================================
+     READ VALUES
+  ============================================= */
+
+  const barcode =
+    String(
+      barcodeInput.value
+    ).trim();
+
+
+  const productId =
+    String(
+      productIdInput.value
+    ).trim();
+
+
+  const productName =
+    String(
+      productNameInput.value
+    ).trim();
+
+
+  const price =
+    Number(
+      priceInput.value
+    );
+
+
+  const beginningStock =
+    Number(
+      stockInput.value
+    );
+
+
+  /* =============================================
+     VALIDATION
+  ============================================= */
+
+  if (!barcode) {
+
+    alert(
+      "Please enter the barcode."
+    );
+
+    barcodeInput.focus();
+
+    return;
+
+  }
+
+
+  if (!productId) {
+
+    alert(
+      "Please enter the Product ID."
+    );
+
+    productIdInput.focus();
+
+    return;
+
+  }
+
+
+  if (!productName) {
+
+    alert(
+      "Please enter the Product Name."
+    );
+
+    productNameInput.focus();
+
+    return;
+
+  }
+
+
+  if (
+    !Number.isFinite(price) ||
+    price < 0
+  ) {
+
+    alert(
+      "Please enter a valid price."
+    );
+
+    priceInput.focus();
+
+    return;
+
+  }
+
+
+  if (
+    !Number.isFinite(beginningStock) ||
+    beginningStock < 0
+  ) {
+
+    alert(
+      "Please enter a valid beginning stock."
+    );
+
+    stockInput.focus();
+
+    return;
+
+  }
+
+
+  /* =============================================
+     PREPARE PRODUCT DATA
+  ============================================= */
+
+  const productData = {
+
+    barcode:
+      barcode,
+
+    productId:
+      productId,
+
+    productName:
+      productName,
+
+    price:
+      price,
+
+    beginningStock:
+      beginningStock
+
+  };
+
+
+  console.log(
+    "REGISTERING PRODUCT:",
+    productData
+  );
+
+
+  /* =============================================
+     DISABLE BUTTON
+  ============================================= */
+
+  button.disabled =
+    true;
+
+  button.textContent =
+    "ADDING...";
+
+
+  /* =============================================
+     SEND TO APPS SCRIPT
+  ============================================= */
+
+  callPOSApi(
+
+    "addProduct",
+
+    {
+      data:
+        JSON.stringify(
+          productData
+        )
+    },
+
+
+    function(result) {
+
+      console.log(
+        "ADD PRODUCT RESPONSE:",
+        result
+      );
+
+
+      button.disabled =
+        false;
+
+      button.textContent =
+        "REGISTER PRODUCT";
+
+
+      /* =========================================
+         FAILED
+      ========================================= */
+
+      if (
+        !result ||
+        result.success !== true
+      ) {
+
+        alert(
+
+          result &&
+          result.message
+
+            ? result.message
+
+            : "Unable to register product."
+
+        );
+
+        return;
+
+      }
+
+
+      /* =========================================
+         SUCCESS
+      ========================================= */
+
+      showProductSuccessMessage({
+  productName: productName,
+  barcode: barcode,
+  price: price,
+  beginningStock: beginningStock
+});
+
+
+      /* =========================================
+         CLEAR FORM
+      ========================================= */
+
+      barcodeInput.value =
+        "";
+
+      productIdInput.value =
+        "";
+
+      productNameInput.value =
+        "";
+
+      priceInput.value =
+        "";
+
+      stockInput.value =
+        "";
+
+
+      barcodeInput.focus();
+
+    },
+
+
+    function(error) {
+
+      console.error(
+        "REGISTER PRODUCT ERROR:",
+        error
+      );
+
+
+      button.disabled =
+        false;
+
+      button.textContent =
+        "REGISTER PRODUCT";
+
+
+      alert(
+
+        error &&
+        error.message
+
+          ? error.message
+
+          : "Unable to connect to the Mobile POS server."
+
+      );
+
+    }
+
+  );
+
+}
+
+  /* =================================================
+   PRODUCT REGISTRATION SUCCESS MESSAGE
+================================================= */
+
+function showProductSuccessMessage(data) {
+
+  const existing =
+    document.getElementById(
+      "productSuccessMessage"
+    );
+
+  if (existing) {
+    existing.remove();
+  }
+
+
+  const overlay =
+    document.createElement("div");
+
+  overlay.id =
+    "productSuccessMessage";
+
+
+  overlay.innerHTML = `
+
+    <div class="product-success-overlay">
+
+      <div class="product-success-card">
+
+        <div class="product-success-icon">
+          ✓
+        </div>
+
+        <div class="product-success-title">
+          PRODUCT ADDED SUCCESSFULLY!
+        </div>
+
+        <div class="product-success-details">
+
+          <div>
+            <span>Product</span>
+            <strong>${escapeHtml(data.productName)}</strong>
+          </div>
+
+          <div>
+            <span>Barcode</span>
+            <strong>${escapeHtml(data.barcode)}</strong>
+          </div>
+
+          <div>
+            <span>Price</span>
+            <strong>₱${Number(data.price).toFixed(2)}</strong>
+          </div>
+
+          <div>
+            <span>Beginning Stock</span>
+            <strong>${Number(data.beginningStock)}</strong>
+          </div>
+
+        </div>
+
+        <button
+          type="button"
+          class="product-success-button"
+          onclick="closeProductSuccessMessage()">
+
+          DONE
+
+        </button>
+
+      </div>
+
+    </div>
+
+  `;
+
+
+  document.body.appendChild(
+    overlay
+  );
+
+}
+
+  /* =================================================
+   ADD STOCK SUCCESS MESSAGE
+================================================= */
+
+/* =================================================
+   ADD STOCK SUCCESS MODAL
+================================================= */
+
+/* =================================================
+   ADD STOCK SUCCESS MODAL
+================================================= */
+
+function showAddStockSuccessMessage(data) {
+
+  const existing =
+    document.getElementById(
+      "addStockSuccessMessage"
+    );
+
+  if (existing) {
+    existing.remove();
+  }
+
+
+  const overlay =
+    document.createElement("div");
+
+  overlay.id =
+    "addStockSuccessMessage";
+
+
+  /* =============================================
+     SAFE VALUES
+  ============================================= */
+
+  const productName =
+    String(
+      data.productName || ""
+    );
+
+  const barcode =
+    String(
+      data.barcode || ""
+    );
+
+  const addedStock =
+    Number(
+      data.addedStock || 0
+    );
+
+  const previousStock =
+    Number(
+      data.previousStock || 0
+    );
+
+  const available =
+    Number(
+      data.available || 0
+    );
+
+
+  /* =============================================
+     CREATE MODAL
+  ============================================= */
+
+  overlay.innerHTML = `
+
+    <div class="product-success-overlay">
+
+      <div class="product-success-card">
+
+        <div class="product-success-icon">
+          ✓
+        </div>
+
+        <div class="product-success-title">
+          STOCK ADDED<br>
+          SUCCESSFULLY!
+        </div>
+
+        <div class="product-success-details">
+
+          <div>
+            <span>Product</span>
+            <strong>${productName}</strong>
+          </div>
+
+          <div>
+            <span>Barcode</span>
+            <strong>${barcode}</strong>
+          </div>
+
+          <div>
+            <span>Added Stock</span>
+            <strong>${addedStock}</strong>
+          </div>
+
+          <div>
+            <span>Previous Stock</span>
+            <strong>${previousStock}</strong>
+          </div>
+
+          <div>
+            <span>New Available Stock</span>
+            <strong>${available}</strong>
+          </div>
+
+        </div>
+
+        <button
+          type="button"
+          class="product-success-button"
+          onclick="closeAddStockSuccessMessage()">
+
+          DONE
+
+        </button>
+
+      </div>
+
+    </div>
+
+  `;
+
+
+  document.body.appendChild(
+    overlay
+  );
+
+}
+
+
+/* =================================================
+   CLOSE ADD STOCK SUCCESS MODAL
+================================================= */
+
+/* =================================================
+   CLOSE ADD STOCK SUCCESS MODAL
+================================================= */
+
+function closeAddStockSuccessMessage() {
+
+  const overlay =
+    document.getElementById(
+      "addStockSuccessMessage"
+    );
+
+  if (overlay) {
+
+    overlay.remove();
+
+  }
+
+
+  /* =============================================
+     RETURN TO INVENTORY
+  ============================================= */
+
+  if (
+    typeof showPage ===
+    "function"
+  ) {
+
+    showPage(
+      "inventory"
+    );
+
+  }
+
+
+  /* =============================================
+     REFRESH INVENTORY
+  ============================================= */
+
+  if (
+    typeof loadInventory ===
+    "function"
+  ) {
+
+    setTimeout(
+      function() {
+
+        loadInventory();
+
+      },
+      200
+    );
+
+  }
+
+}
+  function closeProductSuccessMessage() {
+
+  const message =
+    document.getElementById(
+      "productSuccessMessage"
+    );
+
+  if (message) {
+    message.remove();
+  }
+
+
+  /* =============================================
+     RETURN TO POS AFTER REGISTRATION
+  ============================================= */
+
+  if (returnToPOSAfterRegistration) {
+
+    returnToPOSAfterRegistration = false;
+    pendingRegistrationBarcode = "";
+
+    /*
+     * IMPORTANT:
+     * Do NOT clear cart here.
+     * The global cart array remains untouched.
+     */
+
+    showPage("pos");
+
+    renderCart();
+
+    const manualBarcode =
+      document.getElementById(
+        "manualBarcode"
+      );
+
+    if (manualBarcode) {
+      manualBarcode.value = "";
+      manualBarcode.focus();
+    }
+
+  }
+
+}
+
+  function escapeHtml(value) {
+
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+
+}
+
+  /* =================================================
+     PAGE NAVIGATION
+  ================================================= */
+
+  function showPage(page) {
+
+
+    const pages = [
+      "dashboard",
+      "pos",
+      "addProduct",
+      "inventory",
+      "sales"
+    ];
+
+
+    pages.forEach(name => {
+
+      const element =
+        document.getElementById(
+          name + "Page"
+        );
+
+      if (element) {
+
+        element.classList.toggle(
+          "active",
+          name === page
+        );
+
+      }
+
+    });
+
+
+    /*
+     * Bottom navigation
+     */
+
+    document
+      .querySelectorAll(".nav-item")
+      .forEach(button => {
+
+        button.classList.remove("active");
+
+      });
+
+
+    if (page === "dashboard") {
+
+      document
+        .getElementById("navDashboard")
+        .classList.add("active");
+
+    }
+
+
+    if (page === "pos") {
+
+      document
+        .getElementById("navPOS")
+        .classList.add("active");
+
+    }
+
+
+    if (page === "inventory") {
+
+      document
+        .getElementById("navInventory")
+        .classList.add("active");
+
+    }
+
+    if (page === "inventory") {
+
+  setTimeout(
+    function() {
+
+      loadInventory();
+
+    },
+    50
+  );
+
+}
+
+
+    if (page === "sales") {
+
+      document
+        .getElementById("navSales")
+        .classList.add("active");
+
+    }
+
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+
+  }
+
+
+
+/* =================================================
+   POS CART
+================================================= */
+
+let cart = [];
+
+
+/* =================================================
+   REGISTER PRODUCT FROM POS STATE
+================================================= */
+
+let returnToPOSAfterRegistration = false;
+let pendingRegistrationBarcode = "";
+let registerPromptOpen = false;
+
+
+/* =================================================
+   ADD BARCODE TO CART
+================================================= */
+
+function addBarcodeToCart() {
+
+  const input =
+    document.getElementById(
+      "manualBarcode"
+    );
+
+
+  const barcode =
+    input.value.trim();
+
+
+  if (!barcode) {
+
+    return;
+
+  }
+
+
+   /*
+   * Ask the Mobile POS Web App API
+   * for the product.
+   */
+
+  callPOSApi(
+    "product",
+    {
+      barcode: barcode
+    },
+
+    function(result) {
+
+      if (
+        !result ||
+        !result.success ||
+        !result.found ||
+        !result.product
+      ) {
+
+        showRegisterProductPrompt(barcode);
+
+      input.focus();
+
+      return;
+
+      }
+
+
+      addProductToCart(
+        result.product
+      );
+
+
+      input.value = "";
+      input.focus();
+
+    },
+
+    function(error) {
+
+      console.error(
+        "Product lookup error:",
+        error
+      );
+
+
+      alert(
+        error.message ||
+        "Unable to find product."
+      );
+
+    }
+  );
+
+}
+
+  /* =================================================
+   INVENTORY
+================================================= */
+
+let inventoryLoaded = false;
+
+
+/* =================================================
+   LOAD INVENTORY
+================================================= */
+
+function loadInventory(searchText) {
+
+  const status =
+    document.getElementById(
+      "inventoryStatus"
+    );
+
+  const tableBody =
+    document.getElementById(
+      "inventoryTableBody"
+    );
+
+  const refreshButton =
+    document.getElementById(
+      "inventoryRefreshButton"
+    );
+
+
+  if (!status || !tableBody) {
+
+    console.error(
+      "Inventory elements were not found."
+    );
+
+    return;
+
+  }
+
+
+  const search =
+    String(
+      searchText !== undefined
+        ? searchText
+        : (
+            document.getElementById(
+              "inventorySearch"
+            )?.value || ""
+          )
+    ).trim();
+
+
+  status.textContent =
+    "Loading inventory...";
+
+
+  tableBody.innerHTML =
+    "";
+
+
+  if (refreshButton) {
+
+    refreshButton.disabled =
+      true;
+
+    refreshButton.textContent =
+      "LOADING...";
+
+  }
+
+
+  callPOSApi(
+
+    "inventory",
+
+    {
+      search:
+        search
+    },
+
+
+    function(result) {
+
+      console.log(
+        "INVENTORY RESPONSE:",
+        result
+      );
+
+
+      if (refreshButton) {
+
+        refreshButton.disabled =
+          false;
+
+        refreshButton.textContent =
+          "🔄 REFRESH";
+
+      }
+
+
+      if (
+        !result ||
+        result.success !== true
+      ) {
+
+        status.textContent =
+          result &&
+          result.message
+
+            ? result.message
+
+            : "Unable to load inventory.";
+
+        return;
+
+      }
+
+
+      const products =
+        Array.isArray(
+          result.products
+        )
+          ? result.products
+          : [];
+
+window.inventoryProducts =
+  products;
+      renderInventory(
+        products
+      );
+
+
+      inventoryLoaded =
+        true;
+
+
+      if (products.length === 0) {
+
+        status.textContent =
+          search
+
+            ? "No products found."
+
+            : "No products registered.";
+
+      } else {
+
+        status.textContent =
+          products.length +
+          (
+            products.length === 1
+              ? " product"
+              : " products"
+          ) +
+          " found.";
+
+      }
+
+    },
+
+
+    function(error) {
+
+      console.error(
+        "INVENTORY ERROR:",
+        error
+      );
+
+
+      if (refreshButton) {
+
+        refreshButton.disabled =
+          false;
+
+        refreshButton.textContent =
+          "🔄 REFRESH";
+
+      }
+
+
+      status.textContent =
+
+        error &&
+        error.message
+
+          ? error.message
+
+          : "Unable to connect to the Mobile POS server.";
+
+    }
+
+  );
+
+}
+
+setupInventorySearch();
+/* =================================================
+   RENDER INVENTORY
+================================================= */
+
+function renderInventory(
+  products
+) {
+  window.inventoryProducts =
+  products;
+  updateInventoryFilterCounts();
+
+  const tableBody =
+    document.getElementById(
+      "inventoryTableBody"
+    );
+
+
+  if (!tableBody) {
+    return;
+  }
+
+
+  tableBody.innerHTML =
+    "";
+
+
+  products.forEach(
+    function(product) {
+
+      const row =
+  document.createElement(
+    "tr"
+  );
+
+row.style.cursor =
+  "pointer";
+
+row.addEventListener(
+  "click",
+  function() {
+
+    showInventoryProductDetails(
+      product
+    );
+
+  }
+);
+
+
+      /* =============================================
+   AUTOMATIC STOCK STATUS
+============================================= */
+
+const available =
+  Number(
+    product.available || 0
+  );
+
+
+let status = "";
+let statusClass = "";
+
+
+if (available <= 0) {
+
+  status =
+    "OUT OF STOCK";
+
+  statusClass =
+    "inventory-status-out";
+
+}
+
+
+else if (available <= 5) {
+
+  status =
+    "LOW STOCK";
+
+  statusClass =
+    "inventory-status-low";
+
+}
+
+
+else {
+
+  status =
+    "AVAILABLE";
+
+  statusClass =
+    "inventory-status-available";
+
+}
+
+
+      row.innerHTML = `
+
+        <td>
+          ${escapeHtml(
+            product.barcode || ""
+          )}
+        </td>
+
+        <td>
+          ${escapeHtml(
+            product.productId || ""
+          )}
+        </td>
+
+        <td>
+          ${escapeHtml(
+            product.productName || ""
+          )}
+        </td>
+
+        <td>
+          ₱${Number(
+            product.price || 0
+          ).toFixed(2)}
+        </td>
+
+        <td>
+          ${Number(
+            product.beginningStock || 0
+          )}
+        </td>
+
+        <td>
+          ${Number(
+            product.sold || 0
+          )}
+        </td>
+
+        <td>
+          ${Number(
+            product.available || 0
+          )}
+        </td>
+
+        <td>
+  <span class="inventory-status-badge ${statusClass}">
+    ${escapeHtml(status)}
+  </span>
+</td>
+
+      `;
+
+
+      tableBody.appendChild(
+        row
+      );
+
+    }
+  );
+
+}
+
+  /* =================================================
+   INVENTORY FILTER
+================================================= */
+
+let currentInventoryFilter =
+  "ALL";
+
+
+  /* =================================================
+   INVENTORY SEARCH
+================================================= */
+
+function setupInventorySearch() {
+
+  const searchInput =
+    document.getElementById(
+      "inventorySearch"
+    );
+
+  if (!searchInput) {
+    return;
+  }
+
+
+  /* Prevent duplicate listeners */
+
+  if (
+    searchInput.dataset.searchReady ===
+    "true"
+  ) {
+    return;
+  }
+
+
+  searchInput.dataset.searchReady =
+    "true";
+
+
+  searchInput.addEventListener(
+    "input",
+    function() {
+
+      const search =
+        String(
+          searchInput.value || ""
+        )
+        .trim()
+        .toLowerCase();
+
+
+      /* =========================================
+         GET CURRENT INVENTORY
+      ========================================= */
+
+      if (
+        !Array.isArray(
+          window.inventoryProducts
+        )
+      ) {
+
+        return;
+
+      }
+
+
+      /* =========================================
+         FILTER
+      ========================================= */
+
+      const filteredProducts =
+        window.inventoryProducts.filter(
+          function(product) {
+
+            if (!search) {
+              return true;
+            }
+
+
+            const barcode =
+              String(
+                product.barcode || ""
+              ).toLowerCase();
+
+
+            const productId =
+              String(
+                product.productId || ""
+              ).toLowerCase();
+
+
+            const productName =
+              String(
+                product.productName || ""
+              ).toLowerCase();
+
+
+            return (
+
+              barcode.includes(
+                search
+              ) ||
+
+              productId.includes(
+                search
+              ) ||
+
+              productName.includes(
+                search
+              )
+
+            );
+
+          }
+        );
+
+
+      /* =========================================
+         RENDER FILTERED RESULTS
+      ========================================= */
+
+      renderInventory(
+        filteredProducts
+      );
+
+    }
+  );
+
+}
+/* =================================================
+   UPDATE INVENTORY FILTER COUNTS
+================================================= */
+
+function updateInventoryFilterCounts() {
+
+  if (
+    !Array.isArray(
+      window.inventoryProducts
+    )
+  ) {
+
+    return;
+
+  }
+
+
+  let allCount =
+    window.inventoryProducts.length;
+
+  let availableCount = 0;
+
+  let lowStockCount = 0;
+
+  let outOfStockCount = 0;
+
+
+  window.inventoryProducts.forEach(
+    function(product) {
+
+      const available =
+        Number(
+          product.available || 0
+        );
+
+
+      if (available <= 0) {
+
+        outOfStockCount++;
+
+      }
+
+      else if (available <= 5) {
+
+        lowStockCount++;
+
+      }
+
+      else {
+
+        availableCount++;
+
+      }
+
+    }
+  );
+
+
+  /* =============================================
+     UPDATE BUTTON COUNTS
+  ============================================= */
+
+  const filterButtons =
+    document.querySelectorAll(
+      ".inventory-filter-button"
+    );
+
+
+  filterButtons.forEach(
+    function(button) {
+
+      const filter =
+        String(
+          button.dataset.filter || ""
+        ).toUpperCase();
+
+
+      const countElement =
+        button.querySelector(
+          ".inventory-filter-count"
+        );
+
+
+      if (!countElement) {
+
+        return;
+
+      }
+
+
+      let count = 0;
+
+
+      if (filter === "ALL") {
+
+        count =
+          allCount;
+
+      }
+
+      else if (
+        filter === "AVAILABLE"
+      ) {
+
+        count =
+          availableCount;
+
+      }
+
+      else if (
+        filter === "LOW STOCK"
+      ) {
+
+        count =
+          lowStockCount;
+
+      }
+
+      else if (
+        filter === "OUT OF STOCK"
+      ) {
+
+        count =
+          outOfStockCount;
+
+      }
+
+
+      countElement.textContent =
+        count;
+
+    }
+  );
+
+}
+  
+function filterInventory(filter) {
+
+  currentInventoryFilter =
+    String(
+      filter || "ALL"
+    ).toUpperCase();
+
+
+  /* =============================================
+     UPDATE ACTIVE BUTTON
+  ============================================= */
+
+  const buttons =
+    document.querySelectorAll(
+      ".inventory-filter-button"
+    );
+
+
+  buttons.forEach(
+    function(button) {
+
+      const buttonFilter =
+        String(
+          button.dataset.filter || ""
+        ).toUpperCase();
+
+
+      if (
+        buttonFilter ===
+        currentInventoryFilter
+      ) {
+
+        button.classList.add(
+          "active"
+        );
+
+      } else {
+
+        button.classList.remove(
+          "active"
+        );
+
+      }
+
+    }
+  );
+
+
+  /* =============================================
+     GET CURRENT INVENTORY DATA
+  ============================================= */
+
+  if (
+    !Array.isArray(
+      window.inventoryProducts
+    )
+  ) {
+
+    console.warn(
+      "Inventory products are not available."
+    );
+
+    return;
+
+  }
+
+
+  /* =============================================
+     FILTER PRODUCTS
+  ============================================= */
+
+  let filteredProducts =
+    window.inventoryProducts;
+
+
+  if (
+    currentInventoryFilter !==
+    "ALL"
+  ) {
+
+    filteredProducts =
+      window.inventoryProducts.filter(
+        function(product) {
+
+          const available =
+            Number(
+              product.available || 0
+            );
+
+
+          if (
+            currentInventoryFilter ===
+            "AVAILABLE"
+          ) {
+
+            return available > 5;
+
+          }
+
+
+          if (
+            currentInventoryFilter ===
+            "LOW STOCK"
+          ) {
+
+            return (
+              available > 0 &&
+              available <= 5
+            );
+
+          }
+
+
+          if (
+            currentInventoryFilter ===
+            "OUT OF STOCK"
+          ) {
+
+            return available <= 0;
+
+          }
+
+
+          return true;
+
+        }
+      );
+
+  }
+
+
+  /* =============================================
+     RENDER FILTERED PRODUCTS
+  ============================================= */
+
+  renderInventory(
+    filteredProducts
+  );
+
+}
+
+  /* =================================================
+   INVENTORY PRODUCT DETAILS
+================================================= */
+
+function showInventoryProductDetails(product) {
+
+  const existing =
+    document.getElementById(
+      "inventoryProductDetails"
+    );
+
+
+  if (existing) {
+
+    existing.remove();
+
+  }
+
+
+  const overlay =
+    document.createElement(
+      "div"
+    );
+
+
+  overlay.id =
+    "inventoryProductDetails";
+
+
+  overlay.innerHTML = `
+
+    <div class="inventory-details-overlay">
+
+      <div class="inventory-details-card">
+
+
+        <div class="inventory-details-header">
+
+          <div class="inventory-details-title">
+            Product Details
+          </div>
+
+
+          <button
+            type="button"
+            class="inventory-details-close"
+            onclick="closeInventoryProductDetails()">
+
+            ×
+
+          </button>
+
+        </div>
+
+
+        <div class="inventory-details-product-name">
+
+          ${escapeHtml(
+            product.productName || ""
+          )}
+
+        </div>
+
+
+        <div class="inventory-details-list">
+
+
+          <div class="inventory-details-row">
+
+            <span class="inventory-details-label">
+              Product ID
+            </span>
+
+            <strong class="inventory-details-value">
+
+              ${escapeHtml(
+                product.productId || ""
+              )}
+
+            </strong>
+
+          </div>
+
+
+          <div class="inventory-details-row">
+
+            <span class="inventory-details-label">
+              Barcode
+            </span>
+
+            <strong class="inventory-details-value">
+
+              ${escapeHtml(
+                product.barcode || ""
+              )}
+
+            </strong>
+
+          </div>
+
+
+          <div class="inventory-details-row">
+
+            <span class="inventory-details-label">
+              Selling Price
+            </span>
+
+            <strong class="inventory-details-value">
+
+              ₱${Number(
+                product.price || 0
+              ).toFixed(2)}
+
+            </strong>
+
+          </div>
+
+
+          <div class="inventory-details-row">
+
+            <span class="inventory-details-label">
+              Beginning Stock
+            </span>
+
+            <strong class="inventory-details-value">
+
+              ${Number(
+                product.beginningStock || 0
+              )}
+
+            </strong>
+
+          </div>
+
+
+          <div class="inventory-details-row">
+
+            <span class="inventory-details-label">
+              Sold
+            </span>
+
+            <strong class="inventory-details-value">
+
+              ${Number(
+                product.sold || 0
+              )}
+
+            </strong>
+
+          </div>
+
+
+          <div class="inventory-details-row">
+
+            <span class="inventory-details-label">
+              Available Stock
+            </span>
+
+            <strong class="inventory-details-value">
+
+              ${Number(
+                product.available || 0
+              )}
+
+            </strong>
+
+          </div>
+
+
+          <div class="inventory-details-row">
+
+            <span class="inventory-details-label">
+              Status
+            </span>
+
+            <strong class="inventory-details-value">
+
+              ${escapeHtml(
+                product.status || ""
+              )}
+
+            </strong>
+
+          </div>
+
+
+        </div>
+
+
+        <button
+  type="button"
+  class="inventory-details-add-stock-button"
+  onclick='openInventoryAddStock(${JSON.stringify(product)})'>
+
+  📦 ADD STOCK
+
+</button>
+
+<button
+  type="button"
+  class="inventory-details-edit-button"
+  onclick='openEditProduct(${JSON.stringify(product)})'>
+
+  ✏️ EDIT PRODUCT
+
+</button>
+
+<button
+  type="button"
+  class="inventory-details-close-button"
+  onclick="closeInventoryProductDetails()">
+
+  DONE
+
+</button>
+
+
+      </div>
+
+    </div>
+
+  `;
+
+
+  document.body.appendChild(
+    overlay
+  );
+
+}
+
+  /* =================================================
+   OPEN EDIT PRODUCT
+================================================= */
+
+function openEditProduct(product) {
+
+  /* =============================================
+     CLOSE PRODUCT DETAILS
+  ============================================= */
+
+  const details =
+    document.getElementById(
+      "inventoryProductDetails"
+    );
+
+  if (details) {
+
+    details.remove();
+
+  }
+
+
+  /* =============================================
+     REMOVE EXISTING EDIT MODAL
+  ============================================= */
+
+  const existing =
+    document.getElementById(
+      "editProductModal"
+    );
+
+  if (existing) {
+
+    existing.remove();
+
+  }
+
+
+  /* =============================================
+     SAFE VALUES
+  ============================================= */
+
+  const barcode =
+    String(
+      product.barcode || ""
+    );
+
+  const productId =
+    String(
+      product.productId || ""
+    );
+
+  const productName =
+    String(
+      product.productName || ""
+    );
+
+  const price =
+    Number(
+      product.price || 0
+    );
+
+
+  /* =============================================
+     CREATE MODAL
+  ============================================= */
+
+  const overlay =
+    document.createElement(
+      "div"
+    );
+
+  overlay.id =
+    "editProductModal";
+
+
+  overlay.innerHTML = `
+
+    <div class="product-success-overlay">
+
+      <div class="product-success-card">
+
+        <div class="product-success-title">
+          EDIT PRODUCT
+        </div>
+
+
+        <!-- BARCODE -->
+
+        <div class="form-group">
+
+          <label>
+            Barcode
+          </label>
+
+          <input
+            type="text"
+            value="${escapeHtml(barcode)}"
+            readonly>
+
+        </div>
+
+
+        <!-- PRODUCT ID -->
+
+        <div class="form-group">
+
+          <label for="editProductId">
+            Product ID
+          </label>
+
+          <input
+            id="editProductId"
+            type="text"
+            value="${escapeHtml(productId)}"
+            autocomplete="off">
+
+        </div>
+
+
+        <!-- PRODUCT NAME -->
+
+        <div class="form-group">
+
+          <label for="editProductName">
+            Product Name
+          </label>
+
+          <input
+            id="editProductName"
+            type="text"
+            value="${escapeHtml(productName)}"
+            autocomplete="off">
+
+        </div>
+
+
+        <!-- PRICE -->
+
+        <div class="form-group">
+
+          <label for="editProductPrice">
+            Selling Price
+          </label>
+
+          <input
+            id="editProductPrice"
+            type="number"
+            min="0"
+            step="0.01"
+            value="${price.toFixed(2)}"
+            autocomplete="off">
+
+        </div>
+
+
+        <!-- BUTTONS -->
+
+        <button
+          type="button"
+          id="saveEditProductButton"
+          class="product-success-button"
+          onclick='saveEditedProduct(${JSON.stringify(product)})'>
+
+          SAVE CHANGES
+
+        </button>
+
+
+        <button
+          type="button"
+          class="inventory-details-close-button"
+          onclick="closeEditProductModal()">
+
+          CANCEL
+
+        </button>
+
+      </div>
+
+    </div>
+
+  `;
+
+
+  document.body.appendChild(
+    overlay
+  );
+
+
+  /* =============================================
+     FOCUS PRODUCT NAME
+  ============================================= */
+
+  setTimeout(
+    function() {
+
+      const input =
+        document.getElementById(
+          "editProductName"
+        );
+
+      if (input) {
+
+        input.focus();
+
+        input.select();
+
+      }
+
+    },
+    100
+  );
+
+}
+
+  /* =================================================
+   CLOSE EDIT PRODUCT MODAL
+================================================= */
+
+function closeEditProductModal() {
+
+  const modal =
+    document.getElementById(
+      "editProductModal"
+    );
+
+  if (modal) {
+
+    modal.remove();
+
+  }
+
+}
+
+  /* =================================================
+   SAVE EDITED PRODUCT
+================================================= */
+
+function saveEditedProduct(originalProduct) {
+
+  const productIdInput =
+    document.getElementById(
+      "editProductId"
+    );
+
+  const productNameInput =
+    document.getElementById(
+      "editProductName"
+    );
+
+  const priceInput =
+    document.getElementById(
+      "editProductPrice"
+    );
+
+  const button =
+    document.getElementById(
+      "saveEditProductButton"
+    );
+
+
+  /* =============================================
+     CHECK ELEMENTS
+  ============================================= */
+
+  if (
+    !productIdInput ||
+    !productNameInput ||
+    !priceInput ||
+    !button
+  ) {
+
+    alert(
+      "Edit Product form is incomplete."
+    );
+
+    return;
+
+  }
+
+
+  /* =============================================
+     READ VALUES
+  ============================================= */
+
+  const barcode =
+    String(
+      originalProduct.barcode || ""
+    ).trim();
+
+  const productId =
+    String(
+      productIdInput.value || ""
+    ).trim();
+
+  const productName =
+    String(
+      productNameInput.value || ""
+    ).trim();
+
+  const price =
+    Number(
+      priceInput.value
+    );
+
+
+  /* =============================================
+     VALIDATE
+  ============================================= */
+
+  if (!barcode) {
+
+    alert(
+      "Product barcode is missing."
+    );
+
+    return;
+
+  }
+
+
+  if (!productId) {
+
+    alert(
+      "Please enter the Product ID."
+    );
+
+    productIdInput.focus();
+
+    return;
+
+  }
+
+
+  if (!productName) {
+
+    alert(
+      "Please enter the Product Name."
+    );
+
+    productNameInput.focus();
+
+    return;
+
+  }
+
+
+  if (
+    !Number.isFinite(price) ||
+    price < 0
+  ) {
+
+    alert(
+      "Please enter a valid selling price."
+    );
+
+    priceInput.focus();
+
+    return;
+
+  }
+
+
+  /* =============================================
+     DISABLE BUTTON
+  ============================================= */
+
+  button.disabled =
+    true;
+
+  button.textContent =
+    "SAVING...";
+
+
+  /* =============================================
+     PREPARE DATA
+  ============================================= */
+
+  const productData = {
+
+    barcode:
+      barcode,
+
+    productId:
+      productId,
+
+    productName:
+      productName,
+
+    price:
+      price
+
+  };
+
+
+  console.log(
+    "UPDATING PRODUCT:",
+    productData
+  );
+
+
+  /* =============================================
+     SEND TO APPS SCRIPT
+  ============================================= */
+
+  callPOSApi(
+
+    "updateProduct",
+
+    {
+      data:
+        JSON.stringify(
+          productData
+        )
+    },
+
+
+    function(result) {
+
+      console.log(
+        "UPDATE PRODUCT RESPONSE:",
+        result
+      );
+
+
+      button.disabled =
+        false;
+
+      button.textContent =
+        "SAVE CHANGES";
+
+
+      /* =========================================
+         FAILED
+      ========================================= */
+
+      if (
+        !result ||
+        result.success !== true
+      ) {
+
+        alert(
+
+          result &&
+          result.message
+
+            ? result.message
+
+            : "Unable to update product."
+
+        );
+
+        return;
+
+      }
+
+
+      /* =========================================
+         SUCCESS
+      ========================================= */
+
+      closeEditProductModal();
+
+
+      /* =========================================
+         SHOW SUCCESS MESSAGE
+      ========================================= */
+
+      alert(
+        "PRODUCT UPDATED SUCCESSFULLY!"
+      );
+
+
+      /* =========================================
+         REFRESH INVENTORY
+      ========================================= */
+
+      if (
+        typeof loadInventory ===
+        "function"
+      ) {
+
+        setTimeout(
+          function() {
+
+            loadInventory();
+
+          },
+          200
+        );
+
+      }
+
+    },
+
+
+    function(error) {
+
+      console.error(
+        "UPDATE PRODUCT ERROR:",
+        error
+      );
+
+
+      button.disabled =
+        false;
+
+      button.textContent =
+        "SAVE CHANGES";
+
+
+      alert(
+
+        error &&
+        error.message
+
+          ? error.message
+
+          : "Unable to connect to the Mobile POS server."
+
+      );
+
+    }
+
+  );
+
+}
+
+
+/* =================================================
+   CLOSE PRODUCT DETAILS
+================================================= */
+
+function closeInventoryProductDetails() {
+
+  const modal =
+    document.getElementById(
+      "inventoryProductDetails"
+    );
+
+
+  if (modal) {
+
+    modal.remove();
+
+  }
+
+}
+
+/* =================================================
+   OPEN ADD STOCK FROM INVENTORY
+================================================= */
+
+/* =================================================
+   OPEN ADD STOCK FROM INVENTORY
+================================================= */
+
+/* =================================================
+   OPEN ADD STOCK FROM INVENTORY
+================================================= */
+
+function openInventoryAddStock(product) {
+
+  console.log(
+    "Opening Add Stock from Inventory:",
+    product
+  );
+
+
+  /* =============================================
+     CLOSE PRODUCT DETAILS
+  ============================================= */
+
+  const modal =
+    document.getElementById(
+      "inventoryProductDetails"
+    );
+
+  if (modal) {
+
+    modal.remove();
+
+  }
+
+
+  /* =============================================
+     OPEN ADD PRODUCT PAGE
+  ============================================= */
+
+  if (
+    typeof showPage ===
+    "function"
+  ) {
+
+    showPage(
+      "addProduct"
+    );
+
+  } else {
+
+    console.error(
+      "showPage() was not found."
+    );
+
+    return;
+
+  }
+
+
+  /* =============================================
+     GET FORMS
+  ============================================= */
+
+  const buttons =
+    document.getElementById(
+      "productActionButtons"
+    );
+
+  const registrationForm =
+    document.getElementById(
+      "productRegistrationForm"
+    );
+
+  const addStockForm =
+    document.getElementById(
+      "addStockForm"
+    );
+
+
+  /* =============================================
+     SWITCH TO ADD STOCK
+  ============================================= */
+
+  if (buttons) {
+
+    buttons.style.display =
+      "none";
+
+  }
+
+  if (registrationForm) {
+
+    registrationForm.style.display =
+      "none";
+
+  }
+
+  if (addStockForm) {
+
+    addStockForm.style.display =
+      "block";
+
+  }
+
+
+  /* =============================================
+     GET ADD STOCK INPUTS
+  ============================================= */
+
+  const barcodeInput =
+    document.getElementById(
+      "addStockBarcode"
+    );
+
+  const productNameInput =
+    document.getElementById(
+      "addStockProductName"
+    );
+
+  const currentStockInput =
+    document.getElementById(
+      "addStockCurrent"
+    );
+
+  const quantityInput =
+    document.getElementById(
+      "addStockQuantity"
+    );
+
+
+  /* =============================================
+     CLEAR QUANTITY ONLY
+     
+     We are NOT clearing the selected product.
+  ============================================= */
+
+  if (quantityInput) {
+
+    quantityInput.value =
+      "";
+
+  }
+
+
+  /* =============================================
+     FILL SELECTED PRODUCT
+  ============================================= */
+
+  if (product) {
+
+    if (barcodeInput) {
+
+      barcodeInput.value =
+        product.barcode ||
+        "";
+
+    }
+
+
+    if (productNameInput) {
+
+      productNameInput.value =
+        product.productName ||
+        "";
+
+    }
+
+
+    if (currentStockInput) {
+
+      currentStockInput.value =
+        Number(
+          product.available
+        ) || 0;
+
+    }
+
+  }
+
+
+  /* =============================================
+     FOCUS QUANTITY
+  ============================================= */
+
+  setTimeout(
+    function() {
+
+      if (quantityInput) {
+
+        quantityInput.focus();
+
+      }
+
+    },
+    150
+  );
+
+
+  console.log(
+    "ADD STOCK READY:",
+    {
+      barcode:
+        barcodeInput
+          ? barcodeInput.value
+          : "",
+
+      product:
+        productNameInput
+          ? productNameInput.value
+          : "",
+
+      currentStock:
+        currentStockInput
+          ? currentStockInput.value
+          : ""
+    }
+  );
+
+}/* =================================================
+   INVENTORY SEARCH
+================================================= */
+
+function searchInventory() {
+
+  const input =
+    document.getElementById(
+      "inventorySearch"
+    );
+
+
+  if (!input) {
+    return;
+  }
+
+
+  loadInventory(
+    input.value
+  );
+
+}
+
+  /* =================================================
+   INVENTORY SEARCH LISTENER
+================================================= */
+
+document.addEventListener(
+  "DOMContentLoaded",
+  function() {
+
+    const searchInput =
+      document.getElementById(
+        "inventorySearch"
+      );
+
+
+    if (!searchInput) {
+      return;
+    }
+
+
+    let searchTimer = null;
+
+
+    searchInput.addEventListener(
+      "input",
+      function() {
+
+        clearTimeout(
+          searchTimer
+        );
+
+
+        searchTimer =
+          setTimeout(
+            function() {
+
+              searchInventory();
+
+            },
+            350
+          );
+
+      }
+    );
+
+  }
+);
+
+/* =================================================
+   PRODUCT NOT FOUND — REGISTER PROMPT
+================================================= */
+
+function showRegisterProductPrompt(barcode) {
+
+  barcode =
+    String(barcode || "").trim();
+
+  if (!barcode || registerPromptOpen) {
+    return;
+  }
+
+  registerPromptOpen = true;
+
+  const existing =
+    document.getElementById(
+      "registerProductPrompt"
+    );
+
+  if (existing) {
+    existing.remove();
+  }
+
+  const overlay =
+    document.createElement("div");
+
+  overlay.id =
+    "registerProductPrompt";
+
+  overlay.innerHTML = `
+
+    <div class="product-success-overlay">
+
+      <div class="product-success-card">
+
+        <div
+          class="product-success-icon"
+          style="background:#f59e0b;">
+          !
+        </div>
+
+        <div class="product-success-title">
+          PRODUCT NOT FOUND
+        </div>
+
+        <div class="product-success-details">
+
+          <div>
+            <span>Barcode</span>
+            <strong>${escapeHtml(barcode)}</strong>
+          </div>
+
+        </div>
+
+        <div
+          style="
+            margin-top:20px;
+            margin-bottom:18px;
+            font-size:16px;
+            font-weight:700;
+          ">
+
+          WANT TO REGISTER THIS PRODUCT?
+
+        </div>
+
+        <button
+          type="button"
+          class="product-success-button"
+          onclick="openProductRegistrationFromPOS()">
+
+          YES
+
+        </button>
+
+        <button
+          type="button"
+          class="product-success-button"
+          style="
+            margin-top:10px;
+            background:#e5e7eb;
+            color:#111827;
+          "
+          onclick="closeRegisterProductPrompt()">
+
+          CANCEL
+
+        </button>
+
+      </div>
+
+    </div>
+
+  `;
+
+  document.body.appendChild(overlay);
+
+  /* Remember the barcode for the YES action. */
+  pendingRegistrationBarcode = barcode;
+
+}
+
+
+/* =================================================
+   CLOSE REGISTER PRODUCT PROMPT
+================================================= */
+
+function closeRegisterProductPrompt() {
+
+  const prompt =
+    document.getElementById(
+      "registerProductPrompt"
+    );
+
+  if (prompt) {
+    prompt.remove();
+  }
+
+  registerPromptOpen = false;
+  pendingRegistrationBarcode = "";
+
+}
+
+
+/* =================================================
+   OPEN PRODUCT REGISTRATION FROM POS
+================================================= */
+
+function openProductRegistrationFromPOS() {
+
+  const barcode =
+    String(
+      pendingRegistrationBarcode || ""
+    ).trim();
+
+  if (!barcode) {
+    closeRegisterProductPrompt();
+    return;
+  }
+
+  returnToPOSAfterRegistration = true;
+
+  closeRegisterProductPrompt();
+
+  /* Stop the POS camera before leaving the POS page. */
+  if (scannerRunning) {
+    stopBarcodeScanner();
+  }
+
+  showPage("addProduct");
+
+  showProductRegistrationForm(barcode);
+
+}
+
+
+/* =================================================
+   ADD PRODUCT
+================================================= */
+
+function addProductToCart(product) {
+
+
+  /*
+   * Check whether product already exists
+   * in the current cart.
+   */
+
+  const existing =
+    cart.find(
+      item =>
+        String(item.barcode) ===
+        String(product.barcode)
+    );
+
+
+  if (existing) {
+
+
+    /*
+     * Don't allow quantity to exceed stock.
+     */
+
+    if (
+      existing.quantity >=
+      Number(product.available)
+    ) {
+
+      showPOSAlert(
+        "INSUFFICIENT STOCK",
+        product.productName,
+        "You cannot add more of this product than the available stock.",
+        "Available stock: " + product.available,
+        "⚠"
+      );
+
+      return;
+
+    }
+
+
+    existing.quantity++;
+
+
+  } else {
+
+
+    if (
+      Number(product.available) <= 0
+    ) {
+
+      showPOSAlert(
+        "OUT OF STOCK",
+        product.productName,
+        "This product is currently unavailable and cannot be added to the order.",
+        "Available stock: 0",
+        "!"
+      );
+
+      return;
+
+    }
+
+
+    cart.push({
+
+      barcode:
+        product.barcode,
+
+      productId:
+        product.productId,
+
+      productName:
+        product.productName,
+
+      unitPrice:
+        Number(product.price) || 0,
+
+      quantity: 1,
+
+      available:
+        Number(product.available) || 0
+
+    });
+
+  }
+
+
+  renderCart();
+
+}
+
+
+
+/* =================================================
+   CHANGE QUANTITY
+================================================= */
+
+function changeQuantity(index, amount) {
+
+
+  const item = cart[index];
+
+
+  if (!item) return;
+
+
+  const newQuantity =
+    item.quantity + amount;
+
+
+  if (newQuantity <= 0) {
+
+    removeCartItem(index);
+
+    return;
+
+  }
+
+
+  if (
+    newQuantity >
+    Number(item.available)
+  ) {
+
+    alert(
+      "Only " +
+      item.available +
+      " available."
+    );
+
+    return;
+
+  }
+
+
+  item.quantity =
+    newQuantity;
+
+
+  renderCart();
+
+}
+
+
+
+/* =================================================
+   REMOVE ITEM
+================================================= */
+
+function removeCartItem(index) {
+
+  cart.splice(index, 1);
+
+  renderCart();
+
+}
+
+
+
+/* =================================================
+   CLEAR CART
+================================================= */
+
+function clearCart() {
+
+
+  if (cart.length === 0) {
+    return;
+  }
+
+
+  if (
+    !confirm(
+      "Clear all products from the cart?"
+    )
+  ) {
+
+    return;
+
+  }
+
+
+  cart = [];
+
+  renderCart();
+
+}
+
+
+
+/* =================================================
+   RENDER CART
+================================================= */
+
+function renderCart() {
+
+
+  const container =
+    document.getElementById(
+      "cartItems"
+    );
+
+
+  const emptyCart =
+    document.getElementById(
+      "emptyCart"
+    );
+
+
+  const checkoutButton =
+    document.getElementById(
+      "checkoutButton"
+    );
+
+
+  if (cart.length === 0) {
+
+
+    container.innerHTML = "";
+
+    emptyCart.style.display =
+      "block";
+
+    checkoutButton.disabled =
+      true;
+
+
+    updateCartTotals();
+
+    return;
+
+  }
+
+
+  emptyCart.style.display =
+    "none";
+
+
+  checkoutButton.disabled =
+    false;
+
+
+  container.innerHTML =
+    cart.map(
+      (item, index) => {
+
+
+        const subtotal =
+          item.quantity *
+          item.unitPrice;
+
+
+        return `
+
+          <div class="cart-item">
+
+            <div class="cart-item-top">
+
+              <div>
+
+                <div class="cart-product-name">
+                  ${escapeHtml(
+                    item.productName
+                  )}
+                </div>
+
+                <div class="cart-barcode">
+                  ${escapeHtml(
+                    String(item.barcode)
+                  )}
+                </div>
+
+              </div>
+
+
+              <div class="cart-item-price">
+
+                ₱${formatMoney(
+                  item.unitPrice
+                )}
+
+              </div>
+
+            </div>
+
+
+            <div class="cart-controls">
+
+
+              <div class="quantity-controls">
+
+
+                <button
+                  class="quantity-button"
+                  onclick="
+                    changeQuantity(
+                      ${index},
+                      -1
+                    )
+                  ">
+
+                  −
+
+                </button>
+
+
+                <div
+                  class="quantity-value">
+
+                  ${item.quantity}
+
+                </div>
+
+
+                <button
+                  class="quantity-button"
+                  onclick="
+                    changeQuantity(
+                      ${index},
+                      1
+                    )
+                  ">
+
+                  +
+
+                </button>
+
+
+                <button
+                  class="remove-item"
+                  onclick="
+                    removeCartItem(
+                      ${index}
+                    )
+                  ">
+
+                  Remove
+
+                </button>
+
+
+              </div>
+
+
+              <div class="item-subtotal">
+
+                ₱${formatMoney(
+                  subtotal
+                )}
+
+              </div>
+
+
+            </div>
+
+          </div>
+
+        `;
+
+      }
+    )
+    .join("");
+
+
+  updateCartTotals();
+
+}
+
+
+
+/* =================================================
+   CART TOTALS
+================================================= */
+
+function updateCartTotals() {
+
+
+  let itemCount = 0;
+
+  let total = 0;
+
+
+  cart.forEach(item => {
+
+    itemCount +=
+      Number(item.quantity);
+
+    total +=
+      Number(item.quantity) *
+      Number(item.unitPrice);
+
+  });
+
+
+  document.getElementById(
+    "cartItemCount"
+  ).textContent =
+    itemCount;
+
+
+  document.getElementById(
+    "cartSubtotal"
+  ).textContent =
+    "₱" +
+    formatMoney(total);
+
+
+  document.getElementById(
+    "cartTotal"
+  ).textContent =
+    "₱" +
+    formatMoney(total);
+
+}
+
+
+
+/* =================================================
+   MONEY
+================================================= */
+
+function formatMoney(value) {
+
+  return Number(value || 0)
+    .toLocaleString(
+      "en-PH",
+      {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      }
+    );
+
+}
+
+
+
+/* =================================================
+   HTML SAFETY
+================================================= */
+
+function escapeHtml(value) {
+
+  return String(value)
+    .replace(
+      /&/g,
+      "&amp;"
+    )
+    .replace(
+      /</g,
+      "&lt;"
+    )
+    .replace(
+      />/g,
+      "&gt;"
+    )
+    .replace(
+      /"/g,
+      "&quot;"
+    )
+    .replace(
+      /'/g,
+      "&#039;"
+    );
+
+}
+
+
+
+
+/* =================================================
+   POS ALERT MODAL
+================================================= */
+
+function showPOSAlert(title, productName, message, stockText, icon) {
+
+  const modal = document.getElementById("posAlertModal");
+  const titleElement = document.getElementById("posAlertTitle");
+  const productElement = document.getElementById("posAlertProduct");
+  const messageElement = document.getElementById("posAlertMessage");
+  const stockElement = document.getElementById("posAlertStock");
+  const iconElement = document.getElementById("posAlertIcon");
+
+  if (!modal) {
+    alert(
+      String(title || "NOTICE") + "\n\n" +
+      String(productName || "") + "\n\n" +
+      String(message || "") +
+      (stockText ? "\n" + stockText : "")
+    );
+    return;
+  }
+
+  titleElement.textContent = title || "NOTICE";
+  productElement.textContent = productName || "";
+  messageElement.textContent = message || "";
+  iconElement.textContent = icon || "!";
+
+  if (stockText) {
+    stockElement.textContent = stockText;
+    stockElement.style.display = "inline-flex";
+  } else {
+    stockElement.textContent = "";
+    stockElement.style.display = "none";
+  }
+
+  modal.style.display = "flex";
+}
+
+function closePOSAlert() {
+  const modal = document.getElementById("posAlertModal");
+  if (modal) {
+    modal.style.display = "none";
+  }
+}
+
+/* =================================================
+   CHECKOUT
+================================================= */
+
+/* =================================================
+   PAYMENT MODAL STATE
+================================================= */
+
+let paymentTotalAmount = 0;
+
+
+/* =================================================
+   CHECKOUT
+================================================= */
+
+function checkout() {
+
+  if (!cart || cart.length === 0) {
+    alert("The cart is empty.");
+    return;
+  }
+
+  let total = 0;
+
+  cart.forEach(function(item) {
+    total +=
+      (Number(item.quantity) || 0) *
+      (Number(item.unitPrice) || 0);
+  });
+
+  total = Number(total.toFixed(2));
+
+  openPaymentModal(total);
+}
+
+
+/* =================================================
+   OPEN PAYMENT MODAL
+================================================= */
+
+function openPaymentModal(total) {
+
+  paymentTotalAmount = Number(total) || 0;
+
+  const modal = document.getElementById("paymentModal");
+  const totalElement = document.getElementById("paymentTotal");
+  const cashInput = document.getElementById("cashReceived");
+  const changeElement = document.getElementById("paymentChange");
+  const messageElement = document.getElementById("paymentMessage");
+  const completeButton = document.getElementById("completePaymentButton");
+
+  if (!modal) {
+    alert("Payment interface could not be loaded.");
+    return;
+  }
+
+  totalElement.textContent = "₱" + formatMoney(paymentTotalAmount);
+  cashInput.value = "";
+  changeElement.textContent = "₱0.00";
+  messageElement.style.display = "none";
+  messageElement.textContent = "";
+  completeButton.disabled = true;
+
+  modal.style.display = "flex";
+
+  setTimeout(function() {
+    cashInput.focus();
+  }, 150);
+}
+
+
+/* =================================================
+   CLOSE PAYMENT MODAL
+================================================= */
+
+function closePaymentModal() {
+
+  const modal = document.getElementById("paymentModal");
+
+  if (modal) {
+    modal.style.display = "none";
+  }
+
+  paymentTotalAmount = 0;
+}
+
+
+/* =================================================
+   UPDATE PAYMENT AMOUNT
+================================================= */
+
+function updatePaymentAmount() {
+
+  const cashInput = document.getElementById("cashReceived");
+  const changeElement = document.getElementById("paymentChange");
+  const messageElement = document.getElementById("paymentMessage");
+  const completeButton = document.getElementById("completePaymentButton");
+
+  const cash = Number(cashInput.value);
+
+  if (cashInput.value === "" || !Number.isFinite(cash)) {
+    changeElement.textContent = "₱0.00";
+    messageElement.style.display = "none";
+    completeButton.disabled = true;
+    return;
+  }
+
+  const change = Number((cash - paymentTotalAmount).toFixed(2));
+
+  if (change < 0) {
+    changeElement.textContent = "₱0.00";
+    messageElement.textContent =
+      "Insufficient cash. Short by ₱" + Math.abs(change).toFixed(2);
+    messageElement.style.display = "block";
+    messageElement.style.background = "#fee2e2";
+    messageElement.style.color = "#991b1b";
+    completeButton.disabled = true;
+    return;
+  }
+
+  changeElement.textContent = "₱" + change.toFixed(2);
+  messageElement.textContent = "Payment is ready.";
+  messageElement.style.display = "block";
+  messageElement.style.background = "#ecfdf5";
+  messageElement.style.color = "#065f46";
+  completeButton.disabled = false;
+}
+
+
+/* =================================================
+   COMPLETE PAYMENT
+================================================= */
+
+function completePayment() {
+
+  const cashInput = document.getElementById("cashReceived");
+  const cash = Number(cashInput.value);
+
+  if (!Number.isFinite(cash) || cash < paymentTotalAmount) {
+    updatePaymentAmount();
+    return;
+  }
+
+  const change = Number((cash - paymentTotalAmount).toFixed(2));
+
+  closePaymentModal();
+  processCheckoutPayment(cash, change);
+}
+
+
+/* =================================================
+   TRANSACTION RECEIPT
+================================================= */
+
+function openReceiptModal(data) {
+
+  const modal = document.getElementById("receiptModal");
+  if (!modal) {
+    return;
+  }
+
+  document.getElementById("receiptTransactionId").textContent =
+    data.transactionId || "N/A";
+
+  document.getElementById("receiptItems").textContent =
+    Number(data.items || 0).toLocaleString();
+
+  document.getElementById("receiptTotal").textContent =
+    "₱" + formatMoney(Number(data.total) || 0);
+
+  document.getElementById("receiptCash").textContent =
+    "₱" + formatMoney(Number(data.cash) || 0);
+
+  document.getElementById("receiptChange").textContent =
+    "₱" + formatMoney(Number(data.change) || 0);
+
+  document.getElementById("receiptPaid").textContent =
+    "₱" + formatMoney(Number(data.cash) || 0);
+
+  modal.style.display = "flex";
+}
+
+function closeReceiptModal() {
+  const modal = document.getElementById("receiptModal");
+  if (modal) {
+    modal.style.display = "none";
+  }
+}
+
+
+/* =================================================
+   PROCESS CHECKOUT PAYMENT
+================================================= */
+
+function processCheckoutPayment(cash, change) {
+
+  if (!cart || cart.length === 0) {
+    return;
+  }
+
+  let total = 0;
+
+  cart.forEach(function(item) {
+    total +=
+      (Number(item.quantity) || 0) *
+      (Number(item.unitPrice) || 0);
+  });
+
+  total = Number(total.toFixed(2));
+
+  const checkoutData = {
+    items: cart.map(function(item) {
+      return {
+        barcode: item.barcode,
+        productId: item.productId,
+        productName: item.productName,
+        unitPrice: Number(item.unitPrice) || 0,
+        quantity: Number(item.quantity) || 0
+      };
+    }),
+    cash: Number(cash),
+    change: Number(change),
+    total: Number(total)
+  };
+
+  console.log("CHECKOUT DATA:", checkoutData);
+
+  const checkoutButton = document.getElementById("checkoutButton");
+
+  if (checkoutButton) {
+    checkoutButton.disabled = true;
+    checkoutButton.textContent = "PROCESSING...";
+  }
+
+  callPOSApi(
+    "checkout",
+    { data: JSON.stringify(checkoutData) },
+    function(result) {
+
+      console.log("CHECKOUT RESPONSE:", result);
+
+      if (checkoutButton) {
+        checkoutButton.disabled = false;
+        checkoutButton.textContent = "CHECKOUT";
+      }
+
+      if (!result || result.success !== true) {
+        alert(
+          "CHECKOUT FAILED.\n\n" +
+          (result && result.message
+            ? result.message
+            : "Unable to complete transaction.")
+        );
+        return;
+      }
+
+      const transactionId = result.transactionId || "N/A";
+      const finalTotal = Number(result.total ?? total);
+      const finalCash = Number(result.cash ?? cash);
+      const finalChange = Number(result.change ?? change);
+
+      const cartItemCountForReceipt = cart.reduce(function(sum, item) {
+        return sum + (Number(item.quantity) || 0);
+      }, 0);
+
+      cart = [];
+      renderCart();
+      setScannerStatus("Scanner ready — scan a product");
+
+      openReceiptModal({
+        transactionId: transactionId,
+        items: cartItemCountForReceipt,
+        total: finalTotal,
+        cash: finalCash,
+        change: finalChange
+      });
+
+      loadDashboard();
+    },
+    function(error) {
+
+      console.error("CHECKOUT ERROR:", error);
+
+      if (checkoutButton) {
+        checkoutButton.disabled = false;
+        checkoutButton.textContent = "CHECKOUT";
+      }
+
+      alert(
+        "CHECKOUT FAILED.\n\n" +
+        (error && error.message
+          ? error.message
+          : "Unable to connect to the Mobile POS server.")
+      );
+    }
+  );
+}
+
+
+/* =================================================
+   PAYMENT INPUT LISTENER
+================================================= */
+
+document.addEventListener("input", function(event) {
+  if (event.target && event.target.id === "cashReceived") {
+    updatePaymentAmount();
+  }
+});
+
+
+  /* =================================================
+     LOAD DASHBOARD
+  ================================================= */
+
+  function loadDashboard() {
+
+    callPOSApi(
+      "dashboard",
+      {},
+      function(data) {
+        if (!data) return;
+
+        const sales = Number(data.todaySales || 0);
+        const transactions = Number(data.todayTransactions || 0);
+        const totalProducts = Number(data.totalProducts || 0);
+        const totalAvailable = Number(data.totalAvailable || 0);
+        const lowStock = Number(data.lowStock || 0);
+        const outOfStock = Number(data.outOfStock || 0);
+
+        const el = id => document.getElementById(id);
+
+        if (el("todaySales")) {
+          el("todaySales").textContent = "₱" + sales.toLocaleString("en-PH", {minimumFractionDigits:2, maximumFractionDigits:2});
+        }
+        if (el("todayTransactions")) {
+          el("todayTransactions").textContent = transactions + (transactions === 1 ? " transaction today" : " transactions today");
+        }
+        if (el("totalProducts")) el("totalProducts").textContent = totalProducts.toLocaleString();
+        if (el("totalAvailable")) el("totalAvailable").textContent = totalAvailable.toLocaleString();
+        if (el("availableStatus")) el("availableStatus").textContent = totalAvailable.toLocaleString();
+        if (el("lowStock")) el("lowStock").textContent = lowStock.toLocaleString();
+        if (el("outOfStock")) el("outOfStock").textContent = outOfStock.toLocaleString();
+      },
+      function(error) {
+        console.error("Dashboard API error:", error);
+      }
+    );
+  }
+
+
+  /* =================================================
+     INITIALIZE APP
+  ================================================= */
+
+  document.addEventListener(
+    "DOMContentLoaded",
+    function() {
+      const loading = document.getElementById("loading");
+      if (loading) loading.style.display = "none";
+      loadDashboard();
+      renderCart();
+    }
+  );
+
+/* =================================================
+   BARCODE SCANNER
+================================================= */
+
+let barcodeScanner = null;
+
+let scannerRunning = false;
+
+let lastScannedBarcode = "";
+
+let lastScanTime = 0;
+/* =================================================
+   START SCANNER
+================================================= */
+
+function startBarcodeScanner() {
+
+  if (scannerRunning) {
+    return;
+  }
+
+
+  /*
+   * Make sure the scanner library loaded.
+   */
+
+  if (
+    typeof Html5Qrcode ===
+    "undefined"
+  ) {
+
+    alert(
+      "Barcode scanner library could not be loaded."
+    );
+
+    return;
+
+  }
+
+
+  const reader =
+    document.getElementById(
+      "barcode-reader"
+    );
+
+
+  if (!reader) {
+    return;
+  }
+
+
+  /*
+   * Create scanner.
+   */
+
+  barcodeScanner =
+    new Html5Qrcode(
+      "barcode-reader"
+    );
+
+
+  /*
+   * Barcode formats supported by
+   * common retail products.
+   */
+
+  const formatsToSupport = [
+
+    Html5QrcodeSupportedFormats.EAN_13,
+
+    Html5QrcodeSupportedFormats.EAN_8,
+
+    Html5QrcodeSupportedFormats.UPC_A,
+
+    Html5QrcodeSupportedFormats.UPC_E,
+
+    Html5QrcodeSupportedFormats.CODE_128,
+
+    Html5QrcodeSupportedFormats.CODE_39,
+
+    Html5QrcodeSupportedFormats.ITF,
+
+    Html5QrcodeSupportedFormats.CODABAR
+
+  ];
+
+
+  const config = {
+
+    fps: 10,
+
+    qrbox: {
+
+      width: 260,
+
+      height: 130
+
+    },
+
+    formatsToSupport:
+      formatsToSupport,
+
+    aspectRatio: 1.777
+
+  };
+
+
+  barcodeScanner
+    .start(
+
+      {
+        facingMode: "environment"
+      },
+
+      config,
+
+      onBarcodeDetected,
+
+      onBarcodeScanError
+
+    )
+
+    .then(function() {
+
+      scannerRunning = true;
+
+      setScannerStatus(
+        "Scanner ready — scan a product"
+      );
+
+    })
+
+    .catch(function(error) {
+
+      scannerRunning = false;
+
+      console.error(
+        "Scanner error:",
+        error
+      );
+
+
+      setScannerStatus(
+        "Camera could not be started"
+      );
+
+
+      alert(
+        "Unable to start the barcode scanner.\n\n" +
+        "Please allow camera access for this web app."
+      );
+
+    });
+
+}
+
+
+
+/* =================================================
+   BARCODE DETECTED
+================================================= */
+
+function onBarcodeDetected(decodedText, decodedResult) {
+
+  const barcode = String(decodedText || "").trim();
+  if (!barcode) return;
+
+  const now = Date.now();
+  if (barcode === lastScannedBarcode && now - lastScanTime < 1500) return;
+
+  lastScannedBarcode = barcode;
+  lastScanTime = now;
+
+  setScannerStatus("Product detected: " + barcode);
+  playBarcodeScanSound();
+  console.log("Barcode detected:", barcode);
+
+  callPOSApi(
+    "product",
+    { barcode: barcode },
+    function(result) {
+
+      console.log("Product lookup result:", result);
+
+      if (!result || result.success !== true || result.found !== true || !result.product) {
+        setScannerStatus("Product not found: " + barcode);
+        stopBarcodeScanner();
+        showRegisterProductPrompt(barcode);
+        return;
+      }
+
+      addProductToCart(result.product);
+      setScannerStatus(String(result.product.productName || "Product") + " added");
+      setTimeout(function() { setScannerStatus("Scanner ready — scan next product"); }, 1000);
+    },
+    function(error) {
+      console.error("Product lookup failed:", error);
+      setScannerStatus("Database connection failed");
+      setTimeout(function() { setScannerStatus("Scanner ready — scan a product"); }, 2000);
+    }
+  );
+}
+
+
+/* =================================================
+   SCANNER ERROR CALLBACK
+================================================= */
+
+function onBarcodeScanError(errorMessage) {
+
+  /*
+   * Ignore normal scan failures.
+   *
+   * The library generates many of these
+   * while it is simply looking for a barcode.
+   */
+
+}
+
+
+
+/* =================================================
+   SCANNER STATUS
+================================================= */
+
+function setScannerStatus(message) {
+
+
+  let status =
+    document.getElementById(
+      "scannerStatus"
+    );
+
+
+  if (!status) {
+
+    status =
+      document.createElement(
+        "div"
+      );
+
+
+    status.id =
+      "scannerStatus";
+
+
+    status.className =
+      "scanner-status";
+
+
+    const scannerCard =
+      document.querySelector(
+        ".scanner-card"
+      );
+
+
+    if (scannerCard) {
+
+      scannerCard.appendChild(
+        status
+      );
+
+    }
+
+  }
+
+
+  status.textContent =
+    message;
+
+}
+
+
+
+/* =================================================
+   STOP SCANNER
+================================================= */
+
+function stopBarcodeScanner() {
+
+
+  if (
+    !barcodeScanner ||
+    !scannerRunning
+  ) {
+
+    return;
+
+  }
+
+
+  barcodeScanner
+    .stop()
+
+    .then(function() {
+
+      scannerRunning = false;
+
+      setScannerStatus(
+        "Scanner stopped"
+      );
+
+    })
+
+    .catch(function(error) {
+
+      console.error(error);
+
+      scannerRunning = false;
+
+    });
+
+}
+
+
+
+/* =================================================
+   START WHEN POS OPENS
+================================================= */
+
+const originalShowPage =
+  showPage;
+
+
+showPage = function(page) {
+
+
+  originalShowPage(page);
+
+
+  if (page === "pos") {
+
+    /*
+     * Give the POS page a moment to
+     * become visible before starting
+     * the camera.
+     */
+
+    setTimeout(
+      function() {
+
+        startBarcodeScanner();
+
+      },
+      300
+    );
+
+  }
+
+  else {
+
+    stopBarcodeScanner();
+
+  }
+
+};
+
+</script>
+
+
+</body>
+
+</html>
