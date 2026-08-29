@@ -2690,6 +2690,158 @@
 
 
 <body>
+  <!-- =================================================
+     BRANCH 1 LOGIN
+================================================= -->
+
+<div id="branchLoginScreen"
+     style="
+       position:fixed;
+       inset:0;
+       z-index:1000000;
+       background:#111827;
+       display:flex;
+       align-items:center;
+       justify-content:center;
+       padding:20px;
+     ">
+
+  <div style="
+       width:100%;
+       max-width:380px;
+       background:#ffffff;
+       border-radius:24px;
+       padding:30px 24px;
+       box-shadow:0 25px 70px rgba(0,0,0,.30);
+     ">
+
+    <div style="
+         text-align:center;
+         margin-bottom:25px;
+       ">
+
+      <div style="
+           font-size:48px;
+           margin-bottom:10px;
+         ">
+        🛒
+      </div>
+
+      <div style="
+           font-size:25px;
+           font-weight:800;
+           color:#111827;
+         ">
+        MOBILE POS
+      </div>
+
+      <div style="
+           margin-top:5px;
+           font-size:13px;
+           color:#6b7280;
+         ">
+        BRANCH 1
+      </div>
+
+    </div>
+
+
+    <div style="margin-bottom:15px;">
+
+      <label style="
+             display:block;
+             font-size:13px;
+             font-weight:700;
+             color:#374151;
+             margin-bottom:7px;
+           ">
+        Username
+      </label>
+
+      <input
+        id="branchLoginUsername"
+        type="text"
+        autocomplete="username"
+        placeholder="Enter username"
+        style="
+          width:100%;
+          padding:14px;
+          border:1px solid #d1d5db;
+          border-radius:12px;
+          font-size:15px;
+          outline:none;
+        "
+      >
+
+    </div>
+
+
+    <div style="margin-bottom:18px;">
+
+      <label style="
+             display:block;
+             font-size:13px;
+             font-weight:700;
+             color:#374151;
+             margin-bottom:7px;
+           ">
+        Password
+      </label>
+
+      <input
+        id="branchLoginPassword"
+        type="password"
+        autocomplete="current-password"
+        placeholder="Enter password"
+        style="
+          width:100%;
+          padding:14px;
+          border:1px solid #d1d5db;
+          border-radius:12px;
+          font-size:15px;
+          outline:none;
+        "
+      >
+
+    </div>
+
+
+    <div
+      id="branchLoginMessage"
+      style="
+        display:none;
+        margin-bottom:15px;
+        padding:12px;
+        border-radius:10px;
+        background:#fee2e2;
+        color:#b91c1c;
+        font-size:13px;
+        text-align:center;
+      ">
+    </div>
+
+
+    <button
+      id="branchLoginButton"
+      type="button"
+      onclick="branchLogin()"
+      style="
+        width:100%;
+        padding:15px;
+        border:none;
+        border-radius:13px;
+        background:#111827;
+        color:#ffffff;
+        font-size:15px;
+        font-weight:800;
+        cursor:pointer;
+      ">
+      LOGIN
+    </button>
+
+  </div>
+
+</div>
 
 
 <div class="app">
@@ -4131,6 +4283,201 @@ const API_URL = "https://script.google.com/macros/s/AKfycbwXPoJ1VAIpqLEar3pAU0AO
     script.src = requestURL;
     document.head.appendChild(script);
   }
+
+  /* =================================================
+   BRANCH 1 LOGIN
+================================================= */
+
+let branch1LoggedIn = false;
+let branch1Token = "";
+
+
+function branchLogin() {
+
+  const usernameInput =
+    document.getElementById(
+      "branchLoginUsername"
+    );
+
+  const passwordInput =
+    document.getElementById(
+      "branchLoginPassword"
+    );
+
+  const button =
+    document.getElementById(
+      "branchLoginButton"
+    );
+
+  const message =
+    document.getElementById(
+      "branchLoginMessage"
+    );
+
+
+  const username =
+    String(
+      usernameInput.value || ""
+    ).trim();
+
+  const password =
+    String(
+      passwordInput.value || ""
+    );
+
+
+  message.style.display = "none";
+
+
+  if (!username || !password) {
+
+    message.textContent =
+      "Please enter your username and password.";
+
+    message.style.display =
+      "block";
+
+    return;
+  }
+
+
+  button.disabled = true;
+
+  button.textContent =
+    "LOGGING IN...";
+
+
+  callPOSApi(
+    "branchLogin",
+    {
+      username: username,
+      password: password
+    },
+
+    function(result) {
+
+      console.log(
+        "BRANCH 1 LOGIN RESPONSE:",
+        result
+      );
+
+
+      if (
+        !result ||
+        result.success !== true
+      ) {
+
+        message.textContent =
+          result &&
+          result.message
+            ? result.message
+            : "Incorrect username or password.";
+
+        message.style.display =
+          "block";
+
+        button.disabled =
+          false;
+
+        button.textContent =
+          "LOGIN";
+
+        return;
+      }
+
+
+      /* =========================================
+         LOGIN SUCCESS
+      ========================================= */
+
+      branch1LoggedIn =
+        true;
+
+      branch1Token =
+        result.token || "";
+
+
+      /*
+       * Save the login session locally.
+       * This prevents unnecessary login prompts
+       * during normal page refreshes.
+       */
+
+      try {
+
+        sessionStorage.setItem(
+          "BRANCH1_LOGGED_IN",
+          "true"
+        );
+
+        sessionStorage.setItem(
+          "BRANCH1_TOKEN",
+          branch1Token
+        );
+
+      } catch (error) {
+
+        console.warn(
+          "Session storage unavailable:",
+          error
+        );
+
+      }
+
+
+      /*
+       * Hide login screen.
+       */
+
+      const loginScreen =
+        document.getElementById(
+          "branchLoginScreen"
+        );
+
+      if (loginScreen) {
+
+        loginScreen.style.display =
+          "none";
+
+      }
+
+
+      /*
+       * Start the existing POS.
+       */
+
+      loadDashboard();
+
+    },
+
+
+    function(error) {
+
+      console.error(
+        "BRANCH 1 LOGIN ERROR:",
+        error
+      );
+
+
+      message.textContent =
+        error &&
+        error.message
+          ? error.message
+          : "Unable to connect to the Branch 1 server.";
+
+      message.style.display =
+        "block";
+
+
+      button.disabled =
+        false;
+
+      button.textContent =
+        "LOGIN";
+
+    }
+  );
+}
 
 
   /* =================================================
